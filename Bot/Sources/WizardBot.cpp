@@ -26,7 +26,7 @@ int main() {
     std::cout << "[i] Starting log thread..." << std::endl;
     std::thread log_thread(print_collection_string);
     log_thread.detach();
-    const std::string server_address = "127.0.0.1";
+    const std::string server_address = "10.0.0.2";
     int server_port = 5050;
     std::cout << "[i] Creating control module..." << std::endl;
     ControlModule *control_module =

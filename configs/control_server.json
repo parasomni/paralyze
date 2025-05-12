@@ -20,10 +20,10 @@
     },
     "networking": {
         "ssl": {
-            "certificate_chain": "../../installation/cs_cert.crt",
-            "private_key": "../../installation/cs_pk.pem",
-            "public_key": "../../installation/cs_pub.pem",
-            "dh_file": "../../installation/dh_tmp.pem"
+            "certificate_chain": "../../docs/installation/cs_cert.crt",
+            "private_key": "../../docs/installation/cs_pk.pem",
+            "public_key": "../../docs/installation/cs_pub.pem",
+            "dh_file": "../../docs/installation/dh_tmp.pem"
         },
         "http": {
             "api_endpoints": "../../configs/api_endpoints.json",
