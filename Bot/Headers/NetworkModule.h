@@ -19,7 +19,9 @@ private:
   std::string m_server_address;
 
 protected:
+  std::string m_cert_chain_file;
   std::string m_ca_cert_file;
+  std::string m_private_key_file;
   std::map<std::string, std::string> m_api_endpoints;
 
 public:
