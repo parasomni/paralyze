@@ -1,4 +1,7 @@
 #!/bin/bash
+
+$current_dir=$(pwd)
+
 echo "[i] Checking for virtual environment"
 if [ ! -d "../../venv" ]; then
     echo "[i] Virtual environment not found, creating one"
@@ -48,6 +51,8 @@ if ! grep -q "/usr/local/lib/mariadb" ~/.bashrc; then
     echo "export LD_LIBRARY_PATH=/usr/local/lib/mariadb:\$LD_LIBRARY_PATH" >> ~/.bashrc
 fi
 export LD_LIBRARY_PATH="/usr/local/lib/mariadb:$LD_LIBRARY_PATH"
+
+cd $current_dir
 
 echo "[i] Generating SBOM"
 conan config install https://github.com/conan-io/conan-extensions.git
