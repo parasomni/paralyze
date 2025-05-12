@@ -1,0 +1,9 @@
+@startuml EncryptionStub
+class EncryptionStub{
+    -unsigned char key[32]
+    -int block_size
+    +EncryptionStub(unsigned char *key, int block_size)
+    +std::string encrypt(const std::string &plaintext)
+    +std::string decrypt(const std::string &ciphertext)
+}
+@enduml

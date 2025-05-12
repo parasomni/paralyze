@@ -1,0 +1,20 @@
+@startuml Essentials
+class Essentials {
+    -Essentials()
+    -~Essentials()
+    +static getInstance() : Essentials&
+    +read_from_file(const std::string& file) : std::byte
+    +write_to_file(const std::string& file) : void
+    +byte_to_json(std::vector<std::byte>& data) : nlohmann::json
+    +get_formated_log(const std::string& log) : const std::string&
+    +get_json_dump_from_file(const std::string& file) : nlohmann::json
+    +get_timestamp() : const std::string&
+    +check_directory_existance(const std::string& directory) : void
+    -static instance : Essentials
+}
+
+Essentials : -Essentials()
+Essentials : -~Essentials()
+Essentials : +static getInstance() : Essentials&
+Essentials : -static instance : Essentials
+@enduml

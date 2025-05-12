@@ -1,0 +1,6 @@
+{
+    "_id": "api_endpoints",
+    "instructions": "/api/settings",
+    "tool_suites": "/api/files",
+    "jwt": "/api/auth/jwt"
+}

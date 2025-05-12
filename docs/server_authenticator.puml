@@ -1,0 +1,15 @@
+@startuml Authenticator
+class Authenticator{
+    -std::string m_init_token
+    -bool auth_done
+    +Authenticator(const std::string& init_token)
+    +~Authenticator()
+    -verify_hmac(EVP_PKEY* pkey, const std::vector<unsigned char>& received_hmac, const std::string& init_token) : bool
+    -load_ca_certificate(const char* ca_cert_file) : X509*
+    -issue_certificate(X509_REQ* csr, EVP_PKEY* ca_pkey, X509* ca_cert) : X509* 
+    -verify_certificate(X509* bot_cert, X509* ca_cert) : bool
+    +react_to_config_update(const std::string& init_token) : void
+    +authenticate_bot(std::byte bot_certificate_b) : void
+    +authentication_done() : bool
+}
+@enduml

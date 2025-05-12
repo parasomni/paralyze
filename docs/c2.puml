@@ -1,0 +1,122 @@
+@startuml C2
+
+class LoadBalancer {
+    +distribute_traffic() : void
+}
+
+class BaseServer {
+    -const std::string m_server_address
+    -const int m_server_port
+    -std::byte m_crypt_key
+    -std::string m_log_server_address
+    -std::string m_log_server_port
+    -std::size_t m_next_io_context
+    #BaseLogger *InfoLogger
+    #BaseLogger *WarnLogger
+    #BaseLogger *FatalLogger
+    #BaseLogger *ErrorLogger
+    #BaseLogger *DebuggLogger
+    #EncryptionStub *m_crypt_stub
+    #Essentials *essentials
+    #initialize_server_and_logger(const std::string& server_address, int server_port, const std::string& logger_address, int logger_port)
+    +get_log_server_address() : const std::string&
+    +get_log_server_port() : int
+    +get_server_address() : const std::string& const
+    +get_server_port() : int
+    +get_crypt_key() : std::byte
+    +set_crypt_key(std::byte crypt_key) : void
+    +start_server() : virtual void
+    +react_to_config_update() : virtual void
+    +do_accept() : virtual void
+    +setup_encryption() : virtual std::pair<std::vector<unsigned char>, int>
+    +handle_client(std::shared_ptr<tcp::socket> client_socket) : virtual void
+    +BaseServer(const std::string& server_address, int server_port, std::byte crypt_key, const std::string& logger_address, int logger_port)
+    +~BaseServer()
+}
+
+class CommandServer {
+    -boost::asio::io_context::work m_work
+    -std::vector<std::shared_ptr<boost::asio::io_context>> m_io_contexts
+    -std::vector<std::thread> m_threads
+    -std::unique_ptr<tcp::acceptor> m_acceptor
+    -std::unique_ptr<tcp::socket> m_log_socket
+    -std::string m_tool_suites_file
+    -std::string m_bot_data_path
+    -std::string m_config_gile
+    -Authenticator* m_authenticator
+    +CommandServer(const std::string& config_file)
+    +~CommandServer()
+    +start_server() : override void
+    +react_to_config_update() : override void
+    +do_accept() : override void
+    +setup_encryption() : std::pair<std::vector<unsigned char>, int> : override
+    +handle_client(std::shared_ptr<tcp::socket> client_socket) : override void
+    +send_tool(nlohmann::json tool, int bot_id, std::shared_ptr<tcp::socket> client_socket) : bool
+    +send_update_instructions() : bool
+    +send_updates() : bool
+    +authenticate_bot() : void
+}
+
+class ControlServer {
+    -boost::asio::io_context::work m_work
+    -std::vector<std::shared_ptr<boost::asio::io_context>> m_io_contexts
+    -std::vector<std::thread> m_threads
+    -std::unique_ptr<tcp::acceptor> m_acceptor
+    -std::unique_ptr<tcp::socket> m_log_socket
+    -std::string m_current_id_file
+    -nlohmann::json m_init_instructions
+    -std::string m_config_file
+    -Authenticator* m_authenticator
+    +ControlServer(const std::string& config_file)
+    +~ControlServer()
+    +start_server() : override void
+    +react_to_config_update() : override void
+    +do_accept() : override void
+    +setup_encryption() : std::pair<std::vector<unsigned char>, int> : override
+    +handle_client(std::shared_ptr<tcp::socket> client_socket) : override void
+    +instructions_to_send(int bot_id) : nlohmann::json
+    +send_instructions(const std::string& instruction_file, std::shared_ptr<tcp::socket> client_socket) : bool
+    +assigning_bot(std::shared_ptr<tcp::socket> client_socket) : void
+    +authenticate_bot() : void
+}
+
+class LogServer {
+    -boost::asio::io_context::work m_work
+    -std::vector<std::shared_ptr<boost::asio::io_context>> m_io_contexts
+    -std::vector<std::thread> m_threads
+    -std::unique_ptr<tcp::acceptor> m_acceptor
+    -std::unique_ptr<tcp::socket> m_log_socket
+    -std::string m_config_file
+    +LogServer(const std::string& config_file)
+    +start_server() : override void
+    +react_to_config_update() : override void
+    +setup_encryption() : std::pair<std::vector<unsigned char>, int> : override
+    +do_accept() : override void
+    +handle_client(std::shared_ptr<tcp::socket> client_socket) : override void
+}
+
+class DataServer {
+    -boost::asio::io_context::work m_work
+    -std::vector<std::shared_ptr<boost::asio::io_context>> m_io_contexts
+    -std::vector<std::thread> m_threads
+    -std::unique_ptr<tcp::acceptor> m_acceptor
+    -std::unique_ptr<tcp::socket> m_log_socket
+    -std::string m_config_file
+    +DataServer(const std::string& config_file)
+    +start_server() : override void
+    +react_to_config_update() : override void
+    +do_accept() : override void
+    +setup_encryption() : std::pair<std::vector<unsigned char>, int> : override
+    +handle_client(std::shared_ptr<tcp::socket> client_socket) : override void
+    +authenticate_bot() : void
+    +write_bot_data(int bot_id, const std::string& tool_name, std::byte data) : void
+}
+
+BaseServer <|-- ControlServer
+BaseServer <|-- CommandServer
+BaseServer <|-- LogServer
+BaseServer <|-- DataServer
+LoadBalancer --> BaseServer : Distributes traffic
+
+@enduml
+

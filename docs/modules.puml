@@ -1,0 +1,127 @@
+@startuml Modules
+
+interface IModule {
+    +update_server_address_port(const std::string& server_address, int server_port) : void
+    +update_cert_file(const std::string& cert_file) : void
+}
+
+class BaseModule{
+    -const std::string m_init_token
+    #Essentials *m_essentials
+    #EncryptionStub *m_crypt_stub
+    +BaseModule(const std::string& init_token, const std::string& cert_file)
+    +~BaseModule()
+    +get_init_token() : const std::string&
+    +initialize_crypt_stub(unsigned char* key, int block_size) : void
+    +start_module() : virtual void
+    +setup_encryption() : std::pair<std::vector<unsigned char>, int> 
+}
+
+class NetworkModule implements IModule {
+    -const std::string m_cert_file
+    -int m_server_port
+    -std::string m_server_address
+    -boost::asio::io_context m_io_context
+    -boost::asio::ip::tcp::resolver m_resolver
+    #BotAuthenticator *m_authenticator
+    +NetworkModule(const std::string& server_address, int server_port)
+    +~NetworkModule()
+    +initialize_authenticator(get_init_token(), get_cert_file()) : void
+    +update_server_address_port(const std::string& server_address, int server_port) : void
+    +update_cert_file(const std::string& cert_file) : void
+    +get_io_context() : boost::asio::io_context
+    +get_resolver() : boost::asio::ip::tcp::resolver
+    +get_cert_file() : const std::string&
+    +connect_to_server(std::string server_address, int server_port) : virtual bool
+    +send_data(const std::vector<std::byte>& data) : virtual bool
+    +receive_data() : virtual std::vector<std::byte>
+    +authenticate() : virtual bool
+}
+
+class ControlModule extends NetworkModule {
+    -boost::asio::ip::tcp::socket m_socket
+    +ControlModule(const std::string& server_address, int server_port)
+    +~ControlModule()
+    +connect_to_server(std::string server_address, int server_port) : bool
+    +send_data(const std::vector<std::byte>& data) : bool
+    +receive_data() : std::vector<std::byte>
+    +fetch_instructions() : nlohmann::json
+    +evaluate_instructions(const nlohmann::json& instructions) : void
+    +random_sleep() : void
+    +wait_until_time() : void
+    +start_module() : void
+}
+
+class LoaderModule extends NetworkModule {
+    -boost::asio::ip::tcp::socket m_socket
+    -std::vector<std::byte> m_data
+    +LoaderModule(const std::string& server_address, int server_port)
+    +~LoaderModule()
+    +connect_to_server(std::string server_address, int server_port) : bool
+    +send_data(const std::vector<std::byte>& data) : bool
+    +receive_data() : std::vector<std::byte>
+    +wait_until_time() : void
+    +execute_tool(std::vector<std::byte>& tool) : void
+    +download_tool(nlohmann::json tool_suite) : void
+    +send_execution_info(const std::string& message) : void
+    +start_module(nlohmann::json tool_suite) : void
+}
+
+class ExfiltrationModule extends NetworkModule {
+    -boost::asio::ip::tcp::socket m_socket
+    +ExfiltrationModule(const std::string& server_address, int server_port)
+    +~ExfiltrationModule()
+    +connect_to_server(std::string server_address, int server_port) : bool
+    +send_data(const std::vector<std::byte>& data) : bool
+    +receive_data() : std::vector<std::byte>
+    +send_data_to_server(const std::vector<std::byte>& data) : void
+    +obfuscate_data(const std::vector<std::byte>& data) : void
+    +start_module(std::vector<std::byte> data) : void
+}
+
+class MaintenanceModule extends NetworkModule {
+    -boost::asio::ip::tcp::socket m_socket
+    -std::vector<IModule*> modules
+    +MaintenanceModule(const std::string& server_address, int server_port)
+    +~MaintenanceModule()
+    +connect_to_server(std::string server_address, int server_port) : bool
+    +send_data(const std::vector<std::byte>& data) : bool
+    +receive_data() : std::vector<std::byte>
+    +fetch_updates() : void
+    +evaluate_instructions(const nlohmann::json& instructions) : void
+    +add_module(IModule* module) : void
+    +update_connection_config(const std::string& server_address, int server_port) : void
+    +update_cert_config(const std::string& cert_file) : void
+    +install_updates() : void
+    +start_module() : void
+}
+
+class DosModule extends NetworkModule {  
+    -boost::asio::ip::tcp::socket m_socket
+    +DosModule(const std::string& server_address, int server_port)
+    +~DosModule()
+    +connect_to_server(std::string server_address, int server_port) : bool
+    +send_data(const std::vector<std::byte>& data) : bool
+    +receive_data() : std::vector<std::byte>
+    +start_module() : void
+}
+
+class ProxyModule extends NetworkModule {
+    -boost::asio::ip::tcp::acceptor m_acceptor
+    -boost::asio::ip::tcp::socket m_client_socket
+    +ProxyModule(int local_port)
+    +~ProxyModule()
+    +accept_connection() : void
+    +handle_client(boost::asio::ip::tcp::socket client_socket) : void
+    +enable_port_forwarding() : void
+    +start_module() : void
+}
+
+BaseModule <|-- NetworkModule
+NetworkModule <|-- ControlModule
+NetworkModule <|-- LoaderModule
+NetworkModule <|-- ExfiltrationModule
+BaseModule <|-- MaintenanceModule
+BaseModule <|-- DosModule
+BaseModule <|-- ProxyModule
+@enduml

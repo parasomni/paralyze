@@ -1,0 +1,7 @@
+@startuml BotLogger
+class BotLogger {
+    +format_log(message: std::string, level: LogLevel) : std::string
+    +setLogLevel(level: LogLevel) : void
+    +getLogLevelString(level: LogLevel) : std::string
+}
+@enduml

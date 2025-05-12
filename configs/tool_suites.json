@@ -1,0 +1,12 @@
+{
+    "suite_one": [
+        "../tools/keylogger",
+        "../tools/ddos"
+    ],
+    "suite_two": [
+        "../tools/sysinfo"
+    ],
+    "suite_ransomware": [
+        "../shyguy"
+    ]
+}

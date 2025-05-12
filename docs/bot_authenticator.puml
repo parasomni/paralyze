@@ -1,0 +1,12 @@
+@startuml Authenticator
+class BotAuthenticator{
+    -std::string m_init_token
+    -std::string m_cert_file
+    +Authenticator(const std::string& init_token, const std::string& cert_file)
+    +~Authenticator()
+    -load_certificate(const char* cert_file) : X509*
+    -generate_CSR(EVP_PKEY* pkey, const char* CN) : X509_REQ*
+    -compute_hmac(EVP_PKEY* pkey, const std::string& init_token) : std::vector<unsigned char>
+    +authenticate() : void
+}
+@enduml

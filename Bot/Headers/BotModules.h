@@ -1,0 +1,12 @@
+enum class BotModules {
+  CONTROL,
+  LOADER,
+  DOS,
+  PROXY,
+  MAINTENANCE,
+  NUKE,
+  EXFILTRATION,
+  AUTHENTICATOR,
+  CRYPT,
+  NETWORK
+};

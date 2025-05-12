@@ -1,0 +1,33 @@
+{
+    "_id": "control_server",
+    "instructions": {
+        "dos": "../../configs/dos_instructions.json",
+        "init": "../../configs/init_instructions.json",
+        "sleep": "../../configs/sleep_instructions.json",
+        "update": "../../configs/update_instructions.json",
+        "tool_suites": "../../configs/tool_suites.json"
+    },
+    "general": {
+        "server": {
+            "address": "127.0.0.1",
+            "port": "5050",
+            "io_context_threads": "10"
+        },
+        "logger": {
+            "address": "127.0.0.1",
+            "port": "8081"
+        }
+    },
+    "networking": {
+        "ssl": {
+            "certificate_chain": "../../installation/cs_cert.crt",
+            "private_key": "../../installation/cs_pk.pem",
+            "public_key": "../../installation/cs_pub.pem",
+            "dh_file": "../../installation/dh_tmp.pem"
+        },
+        "http": {
+            "api_endpoints": "../../configs/api_endpoints.json",
+            "server_header": "Apache/2.4.6 (CentOS) OpenSSL/1.0.2k-fips"
+        }
+    }
+}

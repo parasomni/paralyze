@@ -1,0 +1,5 @@
+{
+    "_id": "init_instructions",
+    "module": "control",
+    "sleep": "random"
+}

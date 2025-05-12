@@ -1,0 +1,23 @@
+{
+    "modules": [
+        "dos.cpp",
+        "exfiltration.cpp"
+    ],
+    "connection": {
+        "command": {
+            "address": "127.0.0.1",
+            "port": 8080
+        },
+        "control": {
+            "address": "127.0.0.1",
+            "port": 8081
+        },
+        "data": {
+            "address": "127.0.0.1",
+            "port": 8082
+        }
+    },
+    "files": {
+        "certificate": "cert.pem"
+    }
+}

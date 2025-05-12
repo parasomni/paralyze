@@ -1,0 +1,14 @@
+@startuml CommunicationFlags
+enum CommFlags {
+    ONLINE = 100
+    BOTID = 101
+    NOBOTID = 102
+    OK = 200
+    INSTR = 104
+    HEART = 105
+    TOOL = 400
+    RST = 401
+    FAILURE = 303
+    MODULE = 500
+}
+@enduml

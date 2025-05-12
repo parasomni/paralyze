@@ -1,0 +1,65 @@
+@startuml ServerLogging
+class BaseLogger{
+    -std::string m_server_address
+    -int m_server_port
+    #Essentials* m_essentials
+    +BaseLogger(const std::string& server_address, int port)
+    +~BaseLogger()
+    +get_server_address() : const std::string& const
+    +get_port() : int
+    +set_server_address(const std::string& server_address) : void
+    +set_server_port(int server_port) : void
+    +log_message(const std::string& message) : void
+    +format_log() : virtual std::string& 
+    +send_log_to_server(boost::asio::ip::tcp::socket m_logger_socket, std::byte log_data) : void
+}
+
+class WarnLogger{
+    -boost::asio::io_context m_io_context
+    -boost::asio::ip::tcp::socket m_logger_socket
+    +WarnLogger(const std::string& server_address, int port)
+    +~WarnLogger()
+    -format_log() : override std::string&
+}
+
+class InfoLogger{
+    -boost::asio::io_context m_io_context
+    -boost::asio::ip::tcp::socket m_logger_socket
+    +InfoLogger(const std::string& server_address, int port)
+    +~InfoLogger()
+    -format_log() : override std::string&
+}
+
+class FatalLogger{
+    -boost::asio::io_context m_io_context
+    -boost::asio::ip::tcp::socket m_logger_socket
+    +FatalLogger(const std::string& server_address, int port)
+    +~FatalLogger()
+    -format_log() : override std::string&
+}
+
+class DebugLogger{
+    -boost::asio::io_context m_io_context
+    -boost::asio::ip::tcp::socket m_logger_socket
+    +DebugLogger(const std::string& server_address, int port)
+    +~DebugLogger()
+    -format_log() : override std::string&
+}
+
+class ErrorLogger{
+    -boost::asio::io_context m_io_context
+    -boost::asio::ip::tcp::socket m_logger_socket
+    +ErrorLogger(const std::string& server_address, int port)
+    +~ErrorLogger()
+    -format_log() : override std::string&
+}
+
+BaseLogger <|-- WarnLogger
+BaseLogger <|-- InfoLogger
+BaseLogger <|-- FatalLogger
+BaseLogger <|-- ErrorLogger
+BaseLogger <|-- DebugLogger
+
+BaseLogger *-- Essentials
+
+@enduml

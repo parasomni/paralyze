@@ -1,0 +1,13 @@
+enum class ServerInstance {
+  BASE,
+  COMMAND,
+  CONTROL,
+  LOGANALYZER,
+  CRYPT,
+  DATA,
+  ESSENTIALS,
+  LOGSENDER,
+  AUTHENTICATOR,
+  DBCONTROLLER,
+  CONFIG
+};

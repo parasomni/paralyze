@@ -1,0 +1,52 @@
+@startuml LogServerLogger
+
+class BaseLogger{
+    #Essentials *m_essentials
+    -std::map<std::string, std::string> m_log_entries
+    +BaseLogger(std::map<std::string, std::string>& log_entries, Essentials* essentials)
+    +~BaseLogger()
+    +get_log_entries() : const std::map<std::string, std::string>& log_entries
+    +set_log_entries(const std::map<std::string, std::string>& log_entries) : void
+    +log_message(const std::string& message) : void
+    +format_log() : virtual std::string&
+}
+
+class WarnLogger{
+    +WarnLogger(std::map<std::string, std::string>& log_entries, Essentials* essentials)
+    +~WarnLogger()
+    -format_log() : override std::string&
+}
+
+class InfoLogger{
+    +InfoLogger(std::map<std::string, std::string>& log_entries, Essentials* essentials)
+    +~InfoLogger()
+    -format_log() : override std::string&
+}
+
+class FatalLogger{
+    +FatalLogger(std::map<std::string, std::string>& log_entries, Essentials* essentials)
+    +~FatalLogger()
+    -format_log() : override std::string&
+}
+
+class DebugLogger{
+    +DebugLogger(std::map<std::string, std::string>& log_entries, Essentials* essentials)
+    +~DebugLogger()
+    -format_log() : override std::string&
+}
+
+class ErrorLogger{
+    +ErrorLogger(std::map<std::string, std::string>& log_entries, Essentials* essentials)
+    +~ErrorLogger()
+    -format_log() : override std::string&
+}
+
+BaseLogger <|-- WarnLogger
+BaseLogger <|-- InfoLogger
+BaseLogger <|-- FatalLogger
+BaseLogger <|-- ErrorLogger
+BaseLogger <|-- DebugLogger
+
+BaseLogger *-- Essentials
+
+@enduml

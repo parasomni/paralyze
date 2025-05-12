@@ -1,0 +1,17 @@
+[requires]
+boost/1.86.0
+openssl/3.3.2
+fmt/11.1.1
+
+[generators]
+CMakeDeps
+CMakeToolchain
+
+[options]
+boost/*:shared=True
+fmt/*:header_only=True
+openssl/*:shared=True
+
+[imports]
+bin, *.dll -> ./bin
+lib, *.so -> ./lib

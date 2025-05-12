@@ -1,0 +1,19 @@
+{
+    "general": {
+        "host": "localhost",
+        "port": "27017",
+        "uri": "mongodb://localhost:27017"
+    },
+    "server_configs": {
+        "name": "SVCFG",
+        "collection": "configs"
+    },
+    "bot_configs": {
+        "name": "BCFG",
+        "collection": "configs"
+    },
+    "bot_instructions": {
+        "name": "BINST",
+        "collection": "instructions"
+    }
+}
