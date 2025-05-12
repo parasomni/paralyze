@@ -1,3 +1,0 @@
-/home/xpr/repos/wizard/c++-implementation/Server/build/CMakeFiles/ControlServer.dir
-/home/xpr/repos/wizard/c++-implementation/Server/build/CMakeFiles/edit_cache.dir
-/home/xpr/repos/wizard/c++-implementation/Server/build/CMakeFiles/rebuild_cache.dir

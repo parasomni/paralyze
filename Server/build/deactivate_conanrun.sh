@@ -1,1 +1,0 @@
-. "/home/xpr/repos/wizard/c++-implementation/Server/build/deactivate_conanrunenv-release-x86_64.sh"

@@ -1,3 +1,0 @@
-/home/xpr/repos/wizard/c++-implementation/Interface/build/CMakeFiles/Iface.dir
-/home/xpr/repos/wizard/c++-implementation/Interface/build/CMakeFiles/edit_cache.dir
-/home/xpr/repos/wizard/c++-implementation/Interface/build/CMakeFiles/rebuild_cache.dir

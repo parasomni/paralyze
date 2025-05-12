@@ -1,1 +1,0 @@
-. "/home/xpr/repos/wizard/c++-implementation/Bot/build/conanrunenv-release-x86_64.sh"

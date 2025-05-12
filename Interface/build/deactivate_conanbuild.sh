@@ -1,1 +1,0 @@
-. "/home/xpr/repos/wizard/c++-implementation/Interface/build/deactivate_conanbuildenv-release-x86_64.sh"

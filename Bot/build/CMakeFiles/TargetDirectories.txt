@@ -1,3 +1,0 @@
-/home/xpr/repos/wizard/c++-implementation/Bot/build/CMakeFiles/WizardBot.dir
-/home/xpr/repos/wizard/c++-implementation/Bot/build/CMakeFiles/edit_cache.dir
-/home/xpr/repos/wizard/c++-implementation/Bot/build/CMakeFiles/rebuild_cache.dir
