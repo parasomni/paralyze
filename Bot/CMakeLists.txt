@@ -25,7 +25,8 @@ set (SOURCES
 
 # Add the executable
 add_executable(WizardBot ${SOURCES})
-target_include_directories(WizardBot PRIVATE /home/xpr/repos/wizard/c++-implementation/Bot/Headers)
+target_include_directories(WizardBot PRIVATE ${CMAKE_SOURCE_DIR}/Headers)
+#target_include_directories(WizardBot PRIVATE /home/xpr/repos/wyvern/c++-implementation/Bot/Headers)
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     message(STATUS "Using Clang++")

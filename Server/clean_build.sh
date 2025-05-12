@@ -25,8 +25,9 @@ echo "[i] Checking for MySQL Connector/C++"
 if ! ldconfig -p | grep -q libmariadbcpp; then
     echo "[i] MySQL Connector/C++ not found, installing"
     rm -rf /tmp/mariadb-connector-cpp
-    git clone https://github.com/mariadb-corporation/mariadb-connector-cpp.git /tmp/mariadb-connector-cpp
+    git clone --recurse-submodules -b 1.1.6 https://github.com/mariadb-corporation/mariadb-connector-cpp.git /tmp/mariadb-connector-cpp
     cd /tmp/mariadb-connector-cpp
+    git submodule update --init --recursive
     mkdir build
     cd build
     cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local || { echo "[e] CMake configuration failed"; exit 1; }

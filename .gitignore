@@ -4,4 +4,4 @@
 /c++-implementation/Bot/build/
 /venv
 /.vscode
-/build
+build/

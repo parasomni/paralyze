@@ -23,7 +23,7 @@ set(SOURCES
 
 # Add the executable
 add_executable(ControlServer ${SOURCES})
-target_include_directories(ControlServer PRIVATE ${CMAKE_SOURCE_DIR}/Headers)
+target_include_directories(ControlServer PRIVATE /home/xpr/repos/wyvern/Server/Headers)
 
 # Compiler-specific options
 if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
@@ -49,6 +49,8 @@ find_package(Boost REQUIRED)
 find_package(OpenSSL REQUIRED)
 find_package(fmt REQUIRED)
 find_package(mongocxx REQUIRED)
+find_package(nlohmann_json REQUIRED)
+find_package(jwt-cpp REQUIRED)
 
 # Link dependencies
 target_link_libraries(ControlServer PRIVATE
@@ -56,4 +58,6 @@ target_link_libraries(ControlServer PRIVATE
     openssl::openssl
     fmt::fmt-header-only
     mongo::mongocxx_shared
+    nlohmann_json::nlohmann_json
+    jwt-cpp::jwt-cpp
 )

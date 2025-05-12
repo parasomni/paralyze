@@ -5,6 +5,8 @@ fmt/11.1.1
 mongo-cxx-driver/3.11.0
 mariadb-connector-c/3.3.8
 zstd/1.5.5
+nlohmann_json/3.11.2
+jwt-cpp/0.4.0
 
 [generators]
 CMakeDeps
@@ -16,6 +18,7 @@ fmt/*:header_only=True
 openssl/*:shared=True
 mongo-cxx-driver/*:shared=True
 mariadb-connector-c/*:shared=True
+nlohmann_json/*:shared=True
 
 [imports]
 bin, *.dll -> ./bin
