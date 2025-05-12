@@ -1,0 +1,7 @@
+/c++-implementation/tests/build/
+/c++-implementation/Server/build/
+/c++-implementation/Interface/build/
+/c++-implementation/Bot/build/
+/venv
+/.vscode
+/build
