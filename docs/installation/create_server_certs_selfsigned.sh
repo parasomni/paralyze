@@ -19,6 +19,7 @@ for i in $(seq 1 "$NUM_SERVERS"); do
   echo "[*] Generating key for $NAME..."
   openssl ecparam -name prime256v1 -genkey -noout -out "$DIR/server_private.key"
 
+
   echo "[*] Creating CSR for $NAME..."
   openssl req -new -key "$DIR/server_private.key" -out "$DIR/$NAME.csr" \
     -subj "/C=US/ST=CA/L=Internal/O=PKI/OU=Server/CN=$NAME.local"
@@ -38,4 +39,9 @@ EOF
   openssl x509 -req -in "$DIR/$NAME.csr" -signkey "$DIR/server_private.key" \
     -out "$DIR/server_cert.crt" -days 825 -sha256 \
     -extensions v3_ca -extfile "$DIR/$NAME.conf"
+
+  echo "[*] Exporting public key for $NAME..."
+  openssl x509 -in "$DIR/server_cert.crt" -pubkey -noout \
+    > "$DIR/server_public.key"
+
 done
