@@ -26,21 +26,34 @@ ControlServer::ControlServer(const nlohmann::json &config_file)
         }
         return std::string(password);
       });
+  BaseLogger::getInstance().save_log("Loading certificate chain file " +
+                                         m_configs["certificate_chain"],
+                                     LogLevel::TRACE, ServerInstance::CONTROL);
   m_ssl_context.use_certificate_chain_file(m_configs["certificate_chain"]);
+  BaseLogger::getInstance().save_log("Loading private key file" +
+                                         m_configs["private_key"],
+                                     LogLevel::TRACE, ServerInstance::CONTROL);
   m_ssl_context.use_private_key_file(m_configs["private_key"],
                                      ssl::context::pem);
+  BaseLogger::getInstance().save_log("Loading dh file " + m_configs["dh_file"],
+                                     LogLevel::TRACE, ServerInstance::CONTROL);
   m_ssl_context.use_tmp_dh_file(m_configs["dh_file"]);
-
+  BaseLogger::getInstance().save_log("Loading CA certificate file " +
+                                         m_configs["ca_certificate"],
+                                     LogLevel::TRACE, ServerInstance::CONTROL);
   m_ssl_context.load_verify_file(m_configs["ca_certificate"]);
-  m_ssl_context.set_verify_mode(ssl::verify_peer | ssl::verify_fail_if_no_peer_cert);
+  m_ssl_context.set_verify_mode(ssl::verify_peer |
+                                ssl::verify_fail_if_no_peer_cert);
 
-  m_ssl_context.set_verify_callback([](bool preverified, boost::asio::ssl::verify_context& ctx) {
-      char subject_name[256];
-      X509* cert = X509_STORE_CTX_get_current_cert(ctx.native_handle());
-      X509_NAME_oneline(X509_get_subject_name(cert), subject_name, sizeof(subject_name));
-      std::cout << "[TLS] Client subject: " << subject_name << std::endl;
-      return preverified;
-  });
+  m_ssl_context.set_verify_callback(
+      [](bool preverified, boost::asio::ssl::verify_context &ctx) {
+        char subject_name[256];
+        X509 *cert = X509_STORE_CTX_get_current_cert(ctx.native_handle());
+        X509_NAME_oneline(X509_get_subject_name(cert), subject_name,
+                          sizeof(subject_name));
+        std::cout << "[TLS] Client subject: " << subject_name << std::endl;
+        return preverified;
+      });
   BaseLogger::getInstance().save_log("Initialized control server.",
                                      LogLevel::TRACE, ServerInstance::CONTROL);
   start_accept();
@@ -135,6 +148,10 @@ void ControlServer::react_to_config_update(const nlohmann::json &config) {
         }
         if (ssl.contains("dh_file") && ssl["dh_file"].is_string()) {
           m_configs["dh_file"] = ssl["dh_file"];
+        }
+        if (ssl.contains("ca_certificate") &&
+            ssl["ca_certificate"].is_string()) {
+          m_configs["ca_certificate"] = ssl["ca_certificate"];
         }
       }
       BaseLogger::getInstance().save_log("Updated networking config.",
