@@ -51,7 +51,7 @@ EOF
     -days 730 -sha256 \
     -extensions v3_req -extfile "$CLIENT_DIR/$CLIENT_NAME.conf"
 
-  cat "$CLIENT_DIR/cs_cert.crt" "$SERVER_CERT" pki/root/root.crt > "$CLIENT_DIR/cs.chain.crt"
+  cat "$CLIENT_DIR/cs_cert.crt" "$SERVER_CERT" > "$CLIENT_DIR/cs.chain.crt"
 
   echo "[✓] Client cert $CLIENT_NAME generated with full chain."
 done

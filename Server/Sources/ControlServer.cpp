@@ -17,6 +17,7 @@ ControlServer::ControlServer(const nlohmann::json &config_file)
   m_ssl_context.set_options(ssl::context::default_workarounds |
                             ssl::context::no_sslv2 | ssl::context::no_sslv3 |
                             ssl::context::single_dh_use);
+
   m_ssl_context.set_password_callback(
       [](std::size_t, ssl::context::password_purpose) {
         const char *password = std::getenv("SSL_PRIVATE_KEY_PASSWORD");
@@ -41,19 +42,7 @@ ControlServer::ControlServer(const nlohmann::json &config_file)
   BaseLogger::getInstance().save_log("Loading CA certificate file " +
                                          m_configs["ca_certificate"],
                                      LogLevel::TRACE, ServerInstance::CONTROL);
-  m_ssl_context.load_verify_file(m_configs["ca_certificate"]);
-  m_ssl_context.set_verify_mode(ssl::verify_peer |
-                                ssl::verify_fail_if_no_peer_cert);
 
-  m_ssl_context.set_verify_callback(
-      [](bool preverified, boost::asio::ssl::verify_context &ctx) {
-        char subject_name[256];
-        X509 *cert = X509_STORE_CTX_get_current_cert(ctx.native_handle());
-        X509_NAME_oneline(X509_get_subject_name(cert), subject_name,
-                          sizeof(subject_name));
-        std::cout << "[TLS] Client subject: " << subject_name << std::endl;
-        return preverified;
-      });
   BaseLogger::getInstance().save_log("Initialized control server.",
                                      LogLevel::TRACE, ServerInstance::CONTROL);
   start_accept();

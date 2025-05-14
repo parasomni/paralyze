@@ -9,7 +9,7 @@
     },
     "general": {
         "server": {
-            "address": "10.0.0.2",
+            "address": "127.0.0.1",
             "port": "5050",
             "io_context_threads": "10"
         },
@@ -20,10 +20,10 @@
     },
     "networking": {
         "ssl": {
-            "certificate_chain": "../../docs/installation/pki/servers/server1/server.chain.crt",
-            "ca_certificate": "../../docs/installation/pki/root/root.crt",
-            "private_key": "../../docs/installation/pki/servers/server1/server_private.key",
-            "dh_file": "../../docs/installation/pki/servers/server1/dh.pem"
+            "certificate_chain": "/home/xpr/repos/wyvern/docs/installation/pki/servers/server1/server_cert.crt",
+            "ca_certificate": "/home/xpr/repos/wyvern/docs/installation/pki/servers/server1/server_cert.crt",
+            "private_key": "/home/xpr/repos/wyvern/docs/installation/pki/servers/server1/server_private.key",
+            "dh_file": "/home/xpr/repos/wyvern/docs/installation/pki/servers/server1/dh.pem"
         },
         "http": {
             "api_endpoints": "../../configs/api_endpoints.json",
