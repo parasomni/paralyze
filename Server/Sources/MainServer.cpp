@@ -1,5 +1,5 @@
 #include "ConfigModule.h"
-#include "ControlServer.h"
+#include "CCServer.h"
 #include "DBController.h"
 #include <chrono>
 #include <iostream>
@@ -44,7 +44,7 @@ int main() {
       "../../configs/control_server.json");
 
   std::cout << "Creating control server..." << std::endl;
-  ControlServer control_server(config_dump);
+  CCServer control_server(config_dump);
   std::cout << "Starting control server..." << std::endl;
   try {
     control_server.start_server();
