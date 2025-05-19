@@ -31,17 +31,19 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     target_compile_options(ControlServer PRIVATE -Wall -Wextra -Wpedantic)
 endif()
 
-# Find MariaDB Connector/C++ library
+# Find and link Connector/C++
 find_library(MARIADBCPP_LIBRARY mariadbcpp HINTS /usr/local/lib/mariadb)
+find_library(MARIADB_C_LIBRARY mariadb HINTS /usr/lib /usr/local/lib /usr/lib/x86_64-linux-gnu)
 
-if (MARIADBCPP_LIBRARY)
+if (MARIADBCPP_LIBRARY AND MARIADB_C_LIBRARY)
     message(STATUS "Found mariadbcpp: ${MARIADBCPP_LIBRARY}")
-    target_link_libraries(ControlServer PRIVATE ${MARIADBCPP_LIBRARY})
+    message(STATUS "Found mariadb C: ${MARIADB_C_LIBRARY}")
+    target_link_libraries(ControlServer PRIVATE ${MARIADBCPP_LIBRARY} ${MARIADB_C_LIBRARY})
 else()
-    message(FATAL_ERROR "MariaDB C++ Connector library not found!")
+    message(FATAL_ERROR "MariaDB libraries not found!")
 endif()
 
-# Add MariaDB include directory
+# Include headers
 target_include_directories(ControlServer PRIVATE /usr/local/include/mariadb)
 
 # Dependencies
@@ -55,7 +57,8 @@ find_package(jwt-cpp REQUIRED)
 # Link dependencies
 target_link_libraries(ControlServer PRIVATE
     Boost::boost
-    openssl::openssl
+    OpenSSL::SSL
+    OpenSSL::Crypto
     fmt::fmt-header-only
     mongo::mongocxx_shared
     nlohmann_json::nlohmann_json

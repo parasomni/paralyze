@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.15)
 
 include(${CMAKE_BINARY_DIR}/conan_toolchain.cmake)
-project(ControlServer LANGUAGES CXX)
+project(CCServer LANGUAGES CXX)
 
 # Set C++ standard
 set(CMAKE_CXX_STANDARD 17)
@@ -17,18 +17,18 @@ set(SOURCES
     Sources/Essentials.cpp
     Sources/DBController.cpp
     Sources/ConfigModule.cpp
-    Sources/ControlServer.cpp
+    Sources/CCServer.cpp
     Sources/MainServer.cpp
 )
 
 # Add the executable
-add_executable(ControlServer ${SOURCES})
-target_include_directories(ControlServer PRIVATE /home/xpr/repos/wyvern/Server/Headers)
+add_executable(CCServer ${SOURCES})
+target_include_directories(CCServer PRIVATE /home/xpr/repos/wyvern/Server/Headers)
 
 # Compiler-specific options
 if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     message(STATUS "Using Clang++")
-    target_compile_options(ControlServer PRIVATE -Wall -Wextra -Wpedantic)
+    target_compile_options(CCServer PRIVATE -Wall -Wextra -Wpedantic)
 endif()
 
 # Find and link Connector/C++
@@ -38,13 +38,13 @@ find_library(MARIADB_C_LIBRARY mariadb HINTS /usr/lib /usr/local/lib /usr/lib/x8
 if (MARIADBCPP_LIBRARY AND MARIADB_C_LIBRARY)
     message(STATUS "Found mariadbcpp: ${MARIADBCPP_LIBRARY}")
     message(STATUS "Found mariadb C: ${MARIADB_C_LIBRARY}")
-    target_link_libraries(ControlServer PRIVATE ${MARIADBCPP_LIBRARY} ${MARIADB_C_LIBRARY})
+    target_link_libraries(CCServer PRIVATE ${MARIADBCPP_LIBRARY} ${MARIADB_C_LIBRARY})
 else()
     message(FATAL_ERROR "MariaDB libraries not found!")
 endif()
 
 # Include headers
-target_include_directories(ControlServer PRIVATE /usr/local/include/mariadb)
+target_include_directories(CCServer PRIVATE /usr/local/include/mariadb)
 
 # Dependencies
 find_package(Boost REQUIRED)
@@ -55,7 +55,7 @@ find_package(nlohmann_json REQUIRED)
 find_package(jwt-cpp REQUIRED)
 
 # Link dependencies
-target_link_libraries(ControlServer PRIVATE
+target_link_libraries(CCServer PRIVATE
     Boost::boost
     OpenSSL::SSL
     OpenSSL::Crypto
