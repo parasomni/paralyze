@@ -302,7 +302,7 @@ void CCServer::handle_file_request(
     std::shared_ptr<ssl::stream<ip::tcp::socket>> socket,
     std::shared_ptr<http::request<http::string_body>> request) {
   std::stringstream ss;
-  ss << "Processing settings from "
+  ss << "Processing file request from "
      << socket->lowest_layer().remote_endpoint().address().to_string();
   BaseLogger::getInstance().save_log(ss.str(), LogLevel::TRACE,
                                      ServerInstance::CONTROL);
@@ -320,7 +320,16 @@ void CCServer::handle_file_request(
     send_unauthorized_response(socket);
     return;
   } else {
-    std::string request_body = request->body();
+    nlohmann::json request_body;
+    try{
+      request_body = nlohmann::json::parse(request->body());
+    } catch (const std::exception &e) {
+          BaseLogger::getInstance().save_log("Failed to parse request for uuid: " + uuid , LogLevel::ERROR,
+                                            ServerInstance::CONTROL);
+        BaseLogger::getInstance().save_exception(e, LogLevel::ERROR,
+                                            ServerInstance::CONTROL);
+        return;
+    }
     nlohmann::json tool_suites;
     std::vector<std::byte> tool_data;
 
@@ -333,9 +342,18 @@ void CCServer::handle_file_request(
           LogLevel::ERROR, ServerInstance::CONTROL);
     }
 
-    if (!tool_suites.contains(request_body)) {
+    if (!request_body.contains("tool_suite")){
       BaseLogger::getInstance().save_log(
-          "Failed to find requested tool suite for uuid: " + uuid,
+          "Missing tool_suite key in request for uuid: " + uuid,
+          LogLevel::ERROR, ServerInstance::CONTROL);
+      return;
+    }
+
+    std::string requested_suite = request_body["tool_suite"];
+
+    if (!tool_suites.contains(requested_suite)) {
+      BaseLogger::getInstance().save_log(
+          "Failed to find requested tool suite " + requested_suite + " for uuid: " + uuid,
           LogLevel::ERROR, ServerInstance::CONTROL);
 
       send_not_found_response(socket);
@@ -343,15 +361,17 @@ void CCServer::handle_file_request(
     }
 
     try {
+      BaseLogger::getInstance().save_log("Reading data from file " + tool_suites[requested_suite][0].get<std::string>(), LogLevel::INFO, ServerInstance::CONTROL);
       tool_data = Essentials::getInstance().read_from_file(
-          tool_suites[request_body][0].get<std::string>());
+          tool_suites[requested_suite][0].get<std::string>());
     } catch (const std::exception &e) {
       BaseLogger::getInstance().save_log(
           "Failed to read tool data from file: " +
-              tool_suites[request_body][0].get<std::string>(),
+              tool_suites[requested_suite][0].get<std::string>(),
           LogLevel::ERROR, ServerInstance::CONTROL);
     }
 
+    BaseLogger::getInstance().save_log("Sending " + std::to_string(tool_data.size()) + " to uuid: " + uuid, LogLevel::INFO, ServerInstance::CONTROL);
     response->result(http::status::ok);
     response->set(http::field::server, m_configs["server_header"]);
     response->set(http::field::content_type, "application/octet-stream");
@@ -519,7 +539,7 @@ void CCServer::process_request(
     handle_settings_request(socket, request);
   } else if (request->target() == "/api/auth/jwt") {
     handle_auth_request(socket, request);
-  } else if (request->target() == "/api/file") {
+  } else if (request->target() == "/api/files") {
     handle_file_request(socket, request);
   } else {
     send_not_found_response(socket);

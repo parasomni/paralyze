@@ -18,6 +18,6 @@
         status varchar(255), 
         last_seen varchar(255), 
         bot_type VARCHAR(255),
-        token VARCHAR(255),
+        token TEXT,
         OS VARCHAR(255)
     );

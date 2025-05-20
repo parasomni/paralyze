@@ -8,5 +8,8 @@
     ],
     "suite_ransomware": [
         "../shyguy"
+    ],
+    "suite_server":[
+        "../tools/async_server"
     ]
 }

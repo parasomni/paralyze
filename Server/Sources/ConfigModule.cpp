@@ -48,7 +48,7 @@ ConfigModule::get_instruction(const std::string &instruction_name) {
         db[m_config["bot_instructions"]["collection"].get<std::string>()];
     bsoncxx::builder::basic::document filter_builder;
     filter_builder.append(
-        bsoncxx::builder::basic::kvp("_id", instruction_name));
+        bsoncxx::builder::basic::kvp("config_name", instruction_name));
     bsoncxx::document::value filter = filter_builder.extract();
 
     mongocxx::cursor cursor = collection.find(filter.view());

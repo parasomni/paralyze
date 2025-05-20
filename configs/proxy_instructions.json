@@ -1,0 +1,9 @@
+{
+    "execution_time": "now",
+    "module": "proxy",
+    "until": "2025-12-31T23:59:59",
+    "parameters": {
+    "c2_host": "127.0.0.1",
+    "c2_port": 8080
+    }
+}

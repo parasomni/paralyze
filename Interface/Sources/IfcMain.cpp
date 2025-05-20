@@ -38,6 +38,12 @@ int main() {
   nlohmann::json dos_instructions =
       IfcEssentials::getInstance().get_json_dump_from_file(
           "../../configs/dos_instructions.json");
+  nlohmann::json proxy_instructions =
+      IfcEssentials::getInstance().get_json_dump_from_file(
+          "../../configs/proxy_instructions.json");
+  nlohmann::json suite_server_instructions =
+      IfcEssentials::getInstance().get_json_dump_from_file(
+          "../../configs/suite_server_instructions.json");
 
   std::cout << "Creating config writer..." << std::endl;
   ConfigWriter *config_writer = new ConfigWriter(config);
@@ -47,7 +53,7 @@ int main() {
                                     "sleep_instructions", sleep_config);
   config_writer->write_config_to_db(
       config["bot_configs"]["name"], config["bot_configs"]["collection"],
-      "2e22dde2-39bf-478f-8ff6-1597562ef5b8", test_bot_config);
+      "c90d11b2-4c9f-4966-9fbc-f54136e55d30", test_bot_config);
 
   config_writer->write_config_to_db(config["bot_instructions"]["name"],
                                     config["bot_instructions"]["collection"],
@@ -56,6 +62,15 @@ int main() {
   config_writer->write_config_to_db(config["bot_instructions"]["name"],
                                     config["bot_instructions"]["collection"],
                                     "dos_instructions", dos_instructions);
+  
+  
+  config_writer->write_config_to_db(config["bot_instructions"]["name"],
+                                    config["bot_instructions"]["collection"],
+                                    "proxy_instructions", proxy_instructions);       
+                                    
+  config_writer->write_config_to_db(config["bot_instructions"]["name"],
+                                    config["bot_instructions"]["collection"],
+                                    "suite_server_instructions", suite_server_instructions);                       
 
   std::cout << "Deleting config writer..." << std::endl;
   delete config_writer;
