@@ -10,7 +10,7 @@ NetworkModule::NetworkModule(const std::string &server_address, int server_port)
     : m_resolver(m_io_context),
       m_ssl_context(boost::asio::ssl::context::tlsv12_client),
       m_socket(m_io_context, m_ssl_context), m_init_token("feel_nothing"),
-      m_jwt_file("jwt_file"), m_jwt("feel_nothing"), m_server_port(server_port),
+      m_jwt_file("jwt_file"), m_server_port(server_port),
       m_server_address(server_address) {
   m_ca_cert_file = "/home/xpr/repos/wyvern/docs/installation/pki/servers/server1/server_cert.crt";
   m_cert_chain_file = "/home/xpr/repos/wyvern/docs/installation/pki/clients/server1/client1/cs.chain.crt";
@@ -28,6 +28,9 @@ NetworkModule::NetworkModule(const std::string &server_address, int server_port)
 }
 
 NetworkModule::~NetworkModule() {}
+
+std::map<std::string, std::string> NetworkModule::m_api_endpoints;
+std::string NetworkModule::m_jwt = "feel_nothing";
 
 const std::string &NetworkModule::get_server_address() const {
   return m_server_address;

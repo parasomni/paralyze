@@ -14,7 +14,6 @@ private:
   boost::asio::ssl::stream<boost::asio::ip::tcp::socket> m_socket;
   std::string m_init_token;
   std::string m_jwt_file;
-  std::string m_jwt;
   int m_server_port;
   std::string m_server_address;
 
@@ -22,7 +21,8 @@ protected:
   std::string m_cert_chain_file;
   std::string m_ca_cert_file;
   std::string m_private_key_file;
-  std::map<std::string, std::string> m_api_endpoints;
+  static std::map<std::string, std::string> m_api_endpoints;
+  static std::string m_jwt;
 
 public:
   NetworkModule(const std::string &server_address, int server_port);
@@ -48,7 +48,7 @@ public:
   void update_jwt_file(const std::string &jwt_file);
   void update_server_address_port(const std::string &server_address,
                                   int server_port);
-  void set_api_endpoints(const nlohmann::json &api_endpoints);
+  static void set_api_endpoints(const nlohmann::json &api_endpoints);
   void write_jwt_to_file(const std::vector<std::byte> &jwt);
   void update_ca_cert_file(const std::string &ca_cert_file);
 

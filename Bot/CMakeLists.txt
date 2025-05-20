@@ -21,6 +21,7 @@ set (SOURCES
     Sources/NukeModule.cpp
     Sources/LoaderModule.cpp
     Sources/DoSModule.cpp
+    Sources/ProxyModule.cpp
 )
 
 # Add the executable
@@ -30,7 +31,15 @@ target_include_directories(WizardBot PRIVATE ${CMAKE_SOURCE_DIR}/Headers)
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     message(STATUS "Using Clang++")
-    target_compile_options(WizardBot PRIVATE -Wall -Wextra -Wpedantic)
+    target_compile_options(WizardBot PRIVATE 
+      -Wall -Wextra -Wpedantic 
+      -fsanitize=address,undefined
+      -fno-omit-frame-pointer
+      -g
+    )
+    target_link_options(WizardBot PRIVATE
+      -fsanitize=address,undefined
+    )
 endif()
 
 find_package(Boost REQUIRED)
