@@ -28,7 +28,7 @@
         },
         "http": {
             "api_endpoints": "../../configs/api_endpoints.json",
-            "server_header": "Apache/2.4.6 (CentOS) OpenSSL/1.0.2k-fips"
+            "server_header": "Apache/2.4.6"
         }
     }
 }
