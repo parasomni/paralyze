@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Paralyze – Control Interface</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="interface">
+    <h1>
+      <!-- data-text is required for the pseudo-elements to pick up your letters -->
+      <span class="glitch-text" data-text="PARALYZE">PARALYZE</span> – Control Interface
+    </h1>
+
+    <div class="button-grid">
+      <div class="button-group">
+        <h2>Agent</h2>
+        <button>Builder</button>
+        <button>Management</button>
+      </div>
+      <div class="button-group">
+        <h2>Server</h2>
+        <button>C2</button>
+        <button>Databases</button>
+        <button>Logs</button>
+      </div>
+      <div class="button-group">
+        <h2>Options</h2>
+        <button>Settings</button>
+        <button>Documentation</button>
+        <button>Shutdown</button>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div class="footer-status">
+        <div class="status-field">
+          <label>Agents:</label>
+          <span class="pill pill-glow">3</span>
+        </div>
+        <div class="status-field">
+          <label>C2:</label>
+          <span class="pill pill-connected">Connected</span>
+        </div>
+        <div class="status-field">
+          <label>DB:</label>
+          <span class="pill pill-offline">Offline</span>
+        </div>
+      </div>
+      <span class="version">v1.0.0</span>
+    </div>
+  </div>
+
+  <canvas id="neuron-canvas"></canvas>
+
+  <script>
+    const canvas = document.getElementById('neuron-canvas');
+    const ctx = canvas.getContext('2d');
+    let width, height, particles = [];
+    function resize() {
+      width = canvas.width = innerWidth;
+      height = canvas.height = innerHeight;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    for (let i = 0; i < 100; i++) {
+      particles.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        vx: (Math.random() - 0.5) * 0.5,
+        vy: (Math.random() - 0.5) * 0.5,
+      });
+    }
+
+    function animate() {
+      ctx.fillStyle = 'black';
+      ctx.fillRect(0, 0, width, height);
+
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < 0 || p.x > width) p.vx *= -1;
+        if (p.y < 0 || p.y > height) p.vy *= -1;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(0,200,255,0.8)';
+        ctx.fill();
+
+        for (let j = i + 1; j < particles.length; j++) {
+          const q = particles[j];
+          const dx = p.x - q.x, dy = p.y - q.y;
+          const dist = dx*dx + dy*dy;
+          if (dist < 10000) {
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(q.x, q.y);
+            ctx.strokeStyle = `rgba(0,200,255,${1 - dist/10000})`;
+            ctx.stroke();
+          }
+        }
+      }
+      requestAnimationFrame(animate);
+    }
+    animate();
+  </script>
+</body>
+</html>
