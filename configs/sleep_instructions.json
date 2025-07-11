@@ -1,5 +1,5 @@
 {
     "_id": "sleep_instructions",
     "module": "control",
-    "sleep": "random"
+    "sleep": "60"
 }

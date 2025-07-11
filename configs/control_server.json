@@ -1,34 +1,34 @@
 {
-    "_id": "control_server",
-    "instructions": {
-        "dos": "../../configs/dos_instructions.json",
-        "init": "../../configs/init_instructions.json",
-        "sleep": "../../configs/sleep_instructions.json",
-        "update": "../../configs/update_instructions.json",
-        "tool_suites": "../../configs/tool_suites.json"
+  "_id": "control_server",
+  "instructions": {
+    "dos": "../../configs/dos_instructions.json",
+    "init": "../../configs/init_instructions.json",
+    "sleep": "../../configs/sleep_instructions.json",
+    "update": "../../configs/update_instructions.json",
+    "tool_suites": "../../configs/tool_suites.json"
+  },
+  "general": {
+    "server": {
+      "address": "10.0.0.2",
+      "port": "5050",
+      "io_context_threads": "10"
     },
-    "general": {
-        "server": {
-            "address": "10.0.0.2",
-            "port": "5050",
-            "io_context_threads": "10"
-        },
-        "logger": {
-            "address": "127.0.0.1",
-            "port": "8081"
-        }
-    },
-    "networking": {
-        "ssl": {
-            "certificate_chain": "/home/xpr/repos/wyvern/docs/installation/pki/servers/server1/server_cert.crt",
-            "ca_certificate": "/home/xpr/repos/wyvern/docs/installation/pki/servers/server1/server_cert.crt",
-            "private_key": "/home/xpr/repos/wyvern/docs/installation/pki/servers/server1/server_private.key",
-            "public_key": "/home/xpr/repos/wyvern/docs/installation/pki/servers/server1/server_public.key",
-            "dh_file": "/home/xpr/repos/wyvern/docs/installation/pki/servers/server1/dh.pem"
-        },
-        "http": {
-            "api_endpoints": "../../configs/api_endpoints.json",
-            "server_header": "Apache/2.4.6"
-        }
+    "logger": {
+      "address": "127.0.0.1",
+      "port": "8081"
     }
+  },
+  "networking": {
+    "ssl": {
+      "certificate_chain": "/home/xpr/repos/wyvern/docs/installation/pki/servers/server1/server_cert.crt",
+      "ca_certificate": "/home/xpr/repos/wyvern/docs/installation/pki/servers/server1/server_cert.crt",
+      "private_key": "/home/xpr/repos/wyvern/docs/installation/pki/servers/server1/server_private.key",
+      "public_key": "/home/xpr/repos/wyvern/docs/installation/pki/servers/server1/server_public.key",
+      "dh_file": "/home/xpr/repos/wyvern/docs/installation/pki/servers/server1/dh.pem"
+    },
+    "http": {
+      "api_endpoints": "../../configs/api_endpoints.json",
+      "server_header": "Apache/2.4.6"
+    }
+  }
 }
