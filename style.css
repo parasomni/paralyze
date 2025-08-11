@@ -363,4 +363,55 @@ body.modal-open .interface {
   display: none;
 }
 
+/* ========== Logs Modal ==========
+   Toolbar + read-only viewer
+*/
+.logs-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logs-toolbar label {
+  display: flex;
+  gap: .5rem;
+  align-items: center;
+  font-size: 14px;
+}
+
+#logs-module-filter,
+#logs-level-filter {
+  background: #222;
+  color: #fff;
+  border: 1px solid #444;
+  padding: 6px 8px;
+  border-radius: 6px;
+}
+
+#logs-viewer {
+  width: 100%;
+  height: 50vh;
+  min-height: 280px;
+  background: #111;
+  color: #d7ffff;
+  border: 1px solid #2b3b40;
+  border-radius: 8px;
+  font-family: "Courier New", monospace;
+  font-size: 13px;
+  padding: 12px;
+  box-shadow: inset 0 0 8px rgba(0,0,0,0.35);
+  resize: vertical;
+}
+
+#logs-viewer:read-only {
+  outline: none;
+}
+
+#logs-clear-btn {
+  max-width: 140px;
+}
+
+
 

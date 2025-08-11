@@ -236,7 +236,7 @@
         <h2>Server</h2>
         <button id="c2-btn">C2</button>
         <button onclick="openDBModal()">Databases</button>
-        <button>Logs</button>
+        <button onclick="openLogsModal()">Logs</button>
       </div>
       <div class="button-group">
         <h2>Options</h2>
@@ -318,5 +318,146 @@
     }
     animate();
   </script>
+<!-- Logs Modal -->
+<div class="modal" id="logs-modal">
+  <div class="modal-content wide">
+    <h2>Logs</h2>
+
+    <div class="logs-toolbar">
+      <label>
+        Open log file:
+        <input type="file" id="logs-file-input" accept=".log,.txt,.out,.text"/>
+      </label>
+
+      <label>
+        Module:
+        <select id="logs-module-filter">
+          <option value="">(All)</option>
+          <!-- ServerInstance -->
+          <option>BASE</option>
+          <option>COMMAND</option>
+          <option>CONTROL</option>
+          <option>LOGANALYZER</option>
+          <option>CRYPT</option>
+          <option>DATA</option>
+          <option>ESSENTIALS</option>
+          <option>LOGSENDER</option>
+          <option>AUTHENTICATOR</option>
+          <option>DBCONTROLLER</option>
+          <option>CONFIG</option>
+          <!-- BotModules -->
+          <option>LOADER</option>
+          <option>DOS</option>
+          <option>PROXY</option>
+          <option>MAINTENANCE</option>
+          <option>NUKE</option>
+          <option>EXFILTRATION</option>
+          <option>NETWORK</option>
+        </select>
+      </label>
+
+      <label>
+        Level:
+        <select id="logs-level-filter">
+          <option value="">(All)</option>
+          <option>TRACE</option>
+          <option>DEBUG</option>
+          <option>INFO</option>
+          <option>WARNING</option>
+          <option>ERROR</option>
+          <option>FATAL</option>
+        </select>
+      </label>
+
+      <button id="logs-clear-btn" type="button" title="Clear loaded log">Clear</button>
+    </div>
+
+    <textarea id="logs-viewer" readonly placeholder="Open a log file to display its contents…"></textarea>
+
+    <div class="modal-actions">
+      <button onclick="closeLogsModal()">Back</button>
+      <span style="opacity:.65;align-self:center;font-family:monospace">Read-only</span>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ------- Logs Modal logic (self-contained; no dependency on module.js) -------
+  (function(){
+    const modal      = document.getElementById('logs-modal');
+    const fileInput  = document.getElementById('logs-file-input');
+    const moduleSel  = document.getElementById('logs-module-filter');
+    const levelSel   = document.getElementById('logs-level-filter');
+    const viewer     = document.getElementById('logs-viewer');
+    const clearBtn   = document.getElementById('logs-clear-btn');
+
+    let parsed = []; // {ts, module, level, message, raw}
+
+    // Public open/close so the button can call it:
+    window.openLogsModal  = function() {
+      document.body.classList.add('modal-open');
+      modal.classList.add('visible');
+    };
+    window.closeLogsModal = function() {
+      document.body.classList.remove('modal-open');
+      modal.classList.remove('visible');
+    };
+
+    // Parse a single line: [TS] --[MODULE][LEVEL]: message
+    function parseLine(line) {
+      // Example:
+      // [2025-08-11 19:43:58] --[DBCONTROLLER][INFO]: Initializing DB controller...
+      const re = /^\[(?<ts>[\d-]{10}\s[\d:]{8})\]\s*--\[(?<module>[A-Z]+)\]\[(?<level>[A-Z]+)\]:\s?(?<msg>.*)$/;
+      const m = line.match(re);
+      if (!m) return null;
+      return {
+        ts: m.groups.ts,
+        module: m.groups.module,
+        level: m.groups.level,
+        message: m.groups.msg,
+        raw: line
+      };
+    }
+
+    function render() {
+      const mFilter = (moduleSel.value || '').trim();
+      const lFilter = (levelSel.value  || '').trim();
+
+      const lines = parsed.filter(row => {
+        const byModule = !mFilter || row.module === mFilter;
+        const byLevel  = !lFilter || row.level  === lFilter;
+        return byModule && byLevel;
+      }).map(row => row.raw);
+
+      viewer.value = lines.join('\n');
+    }
+
+    function reset() {
+      parsed = [];
+      viewer.value = '';
+      fileInput.value = '';
+      render();
+    }
+
+    fileInput.addEventListener('change', async () => {
+      const file = fileInput.files && fileInput.files[0];
+      if (!file) return;
+      const text = await file.text();
+      const lines = text.split(/\r?\n/);
+      parsed = [];
+      for (const line of lines) {
+        if (!line.trim()) continue;
+        const p = parseLine(line);
+        parsed.push(p ? p : { raw: line, ts: null, module: null, level: null, message: null });
+      }
+      render();
+    });
+
+    moduleSel.addEventListener('change', render);
+    levelSel.addEventListener('change', render);
+    clearBtn.addEventListener('click', reset);
+  })();
+</script>
+
 </body>
 </html>
