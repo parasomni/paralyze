@@ -4,5 +4,5 @@ class NukeModule {
 public:
   NukeModule();
   ~NukeModule();
-  void nuke_wizard();
+  void nuke_paralyze();
 };

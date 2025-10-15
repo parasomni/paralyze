@@ -98,7 +98,7 @@ void ControlModule::execute_module(const nlohmann::json &instructions) {
     }
     if (instructions.contains("nuke")) {
       NukeModule nuke;
-      nuke.nuke_wizard();
+      nuke.nuke_paralyze();
     }
   } catch (const std::exception &e) {
     BotLogger::getInstance().save_exception(e, LogLevel::ERROR,

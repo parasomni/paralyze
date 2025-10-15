@@ -210,7 +210,7 @@ std::string CCServer::generate_jwt(const std::string &uuid) {
   try {
     auto token =
         jwt::create()
-            .set_issuer("wizard") // Issuer claim
+            .set_issuer("paralyze") // Issuer claim
             .set_type("JWT")      // Type header
             .set_payload_claim("user_id",
                                jwt::claim(uuid)) // Custom payload claim

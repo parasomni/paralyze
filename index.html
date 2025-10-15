@@ -221,8 +221,7 @@
 <body>
   <div class="interface">
     <h1>
-      <!-- data-text is required for the pseudo-elements to pick up your letters -->
-      <span class="glitch-text" data-text="PARALYZE">PARALYZE</span> – Control Interface
+      <span class="glitch-text" data-text="PARALYZE">PARALYZE</span> - Control Interface
     </h1>
 
     <div class="button-grid">
@@ -382,7 +381,6 @@
 </div>
 
 <script>
-  // ------- Logs Modal logic (self-contained; no dependency on module.js) -------
   (function(){
     const modal      = document.getElementById('logs-modal');
     const fileInput  = document.getElementById('logs-file-input');
@@ -391,9 +389,7 @@
     const viewer     = document.getElementById('logs-viewer');
     const clearBtn   = document.getElementById('logs-clear-btn');
 
-    let parsed = []; // {ts, module, level, message, raw}
-
-    // Public open/close so the button can call it:
+    let parsed = []; 
     window.openLogsModal  = function() {
       document.body.classList.add('modal-open');
       modal.classList.add('visible');
@@ -403,10 +399,7 @@
       modal.classList.remove('visible');
     };
 
-    // Parse a single line: [TS] --[MODULE][LEVEL]: message
     function parseLine(line) {
-      // Example:
-      // [2025-08-11 19:43:58] --[DBCONTROLLER][INFO]: Initializing DB controller...
       const re = /^\[(?<ts>[\d-]{10}\s[\d:]{8})\]\s*--\[(?<module>[A-Z]+)\]\[(?<level>[A-Z]+)\]:\s?(?<msg>.*)$/;
       const m = line.match(re);
       if (!m) return null;

@@ -20,11 +20,11 @@
   },
   "networking": {
     "ssl": {
-      "certificate_chain": "/home/xpr/repos/wyvern/docs/installation/pki/servers/server1/server_cert.crt",
-      "ca_certificate": "/home/xpr/repos/wyvern/docs/installation/pki/servers/server1/server_cert.crt",
-      "private_key": "/home/xpr/repos/wyvern/docs/installation/pki/servers/server1/server_private.key",
-      "public_key": "/home/xpr/repos/wyvern/docs/installation/pki/servers/server1/server_public.key",
-      "dh_file": "/home/xpr/repos/wyvern/docs/installation/pki/servers/server1/dh.pem"
+      "certificate_chain": "/path/to/paralyze/docs/installation/pki/servers/server1/server_cert.crt",
+      "ca_certificate": "/path/to/paralyze/docs/installation/pki/servers/server1/server_cert.crt",
+      "private_key": "/path/to/paralyze/docs/installation/pki/servers/server1/server_private.key",
+      "public_key": "/path/to/paralyze/docs/installation/pki/servers/server1/server_public.key",
+      "dh_file": "/path/to/paralyze/docs/installation/pki/servers/server1/dh.pem"
     },
     "http": {
       "api_endpoints": "../../configs/api_endpoints.json",

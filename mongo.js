@@ -11,7 +11,7 @@ export async function checkMongoDBConnection() {
 
     const client = new MongoClient(uri, { useUnifiedTopology: true });
     await client.connect();
-    await client.db().admin().ping();  // Basic health check
+    await client.db().admin().ping();  
     await client.close();
 
     return true;

@@ -1,15 +1,11 @@
 {
     "suite_one": [
-        "../tools/keylogger",
-        "../tools/ddos"
+        "../tools/keylogger"
     ],
     "suite_two": [
-        "../tools/sysinfo"
+        "../tools/port_scanner"
     ],
     "suite_ransomware": [
-        "../shyguy"
-    ],
-    "suite_server":[
-        "../tools/async_server"
+        ""
     ]
 }

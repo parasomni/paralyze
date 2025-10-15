@@ -4,8 +4,8 @@
     "module": "dos",
     "until": "2025-12-31T23:59:59",
     "parameters": {
-        "target_ip": "10.0.0.2",
-        "target_port": 50789,
+        "target_ip": "10.0.10.1",
+        "target_port": 8888,
         "connection_count": 100,
         "delay_ms": 300
     }

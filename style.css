@@ -37,10 +37,9 @@
     font-family: monospace;
     font-weight: bold;
     color: white;
-    z-index: 0;               /* base text at bottom */
+    z-index: 0;            
   }
   
-  /* both color-layers: stretch full width & height */
   .glitch-text::before,
   .glitch-text::after {
     content: attr(data-text);
@@ -52,7 +51,6 @@
     color: inherit;
   }
   
-  /* MAGENTA SLICE – above the white text */
   .glitch-text::before {
     left: 2px;
     text-shadow: -2px 0 rgb(10, 0, 10);
@@ -60,7 +58,6 @@
     animation: glitch-slice-1 6s infinite linear alternate-reverse;
   }
   
-  /* CYAN SLICE – above magenta */
   
   .glitch-text::after {
     left: -2px;
@@ -229,9 +226,8 @@
   flex-direction: column;
   gap: 1rem;
   min-width: 300px;
-  max-height: calc(100vh - 4rem); /* leave a little “breathing room” above/below */
-  overflow-y: auto;              /* scroll if content is taller */
-  /* optionally: add a bit of padding at the bottom so text isn't flush */
+  max-height: calc(100vh - 4rem); 
+  overflow-y: auto;             
   padding-bottom: 1rem;
 }
 
@@ -307,8 +303,8 @@ body.modal-open .interface {
 }
 
 #json-editor {
-  background-color: #655c5ca8;           /* Light grey background */
-  color: #4acfff;                         /* Darker text for contrast */
+  background-color: #655c5ca8;          
+  color: #4acfff;                        
   font-family: 'Courier New', monospace;
   font-size: 14px;
   padding: 12px;
@@ -363,9 +359,6 @@ body.modal-open .interface {
   display: none;
 }
 
-/* ========== Logs Modal ==========
-   Toolbar + read-only viewer
-*/
 .logs-toolbar {
   display: flex;
   flex-wrap: wrap;

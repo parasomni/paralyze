@@ -23,7 +23,7 @@ set(SOURCES
 
 # Add the executable
 add_executable(CCServer ${SOURCES})
-target_include_directories(CCServer PRIVATE /home/xpr/repos/wyvern/Server/Headers)
+target_include_directories(CCServer PRIVATE /path/to/paralyze/Server/Headers)
 
 # Compiler-specific options
 if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")

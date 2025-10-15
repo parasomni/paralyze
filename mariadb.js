@@ -17,7 +17,7 @@ export async function checkMariaDBConnection() {
     conn = await mariadb.createConnection({
       host: 'localhost',
       user: 'root',
-      password: '128asdxaqw2#ASK',
+      password: 'sup3rS3cur3P@ssw0rd',
       database: 'botNetwork'
     });
     await conn.query("SELECT 1");

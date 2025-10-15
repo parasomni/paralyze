@@ -12,9 +12,9 @@ NetworkModule::NetworkModule(const std::string &server_address, int server_port)
       m_socket(m_io_context, m_ssl_context), m_init_token("feel_nothing"),
       m_jwt_file("jwt_file"), m_server_port(server_port),
       m_server_address(server_address) {
-  m_ca_cert_file = "/home/xpr/repos/wyvern/docs/installation/pki/servers/server1/server_cert.crt";
-  m_cert_chain_file = "/home/xpr/repos/wyvern/docs/installation/pki/clients/server1/client1/cs.chain.crt";
-  m_private_key_file = "/home/xpr/repos/wyvern/docs/installation/pki/clients/server1/client1/cs_private.key";
+  m_ca_cert_file = "/path/to/paralyze/docs/installation/pki/servers/server1/server_cert.crt";
+  m_cert_chain_file = "/path/to/paralyze/docs/installation/pki/clients/server1/client1/cs.chain.crt";
+  m_private_key_file = "/path/to/paralyze/docs/installation/pki/clients/server1/client1/cs_private.key";
 
   m_ssl_context.set_verify_mode(boost::asio::ssl::verify_peer);
   m_ssl_context.use_certificate_chain_file(m_cert_chain_file);

