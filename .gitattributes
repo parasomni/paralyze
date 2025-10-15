@@ -1,10 +1,17 @@
 * linguist-vendored
 
 Bot/* -linguist-vendored
+Bot/Headers/* -linguist-vendored
+Bot/Sources/* -linguist-vendored
 Interface/* -linguist-vendored
+Interface/Panel/* -linguist-vendored
+Interface/Headers/* -linguist-vendored
+Interface/Sources/* -linguist-vendored
+Server/Headers/* -linguist-vendored
+Server/Sources/* -linguist-vendored
 configs/* -linguist-vendored
-Server/* -linguist-vendored
 docs/* -linguist-vendored
+docs/installation/* -linguist-vendored
 
 *.cpp linguist-language=C++
 *.h linguist-language=C++
