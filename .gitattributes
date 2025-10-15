@@ -1,0 +1,13 @@
+* linguist-vendored
+
+Bot/* -linguist-vendored
+Interface/* -linguist-vendored
+configs/* -linguist-vendored
+Server/* -linguist-vendored
+docs/* -linguist-vendored
+
+*.cpp linguist-language=C++
+*.h linguist-language=C++
+*.js linguist-language=JavaScript
+*.html linguist-language=HTML
+*.css linguist-language=CSS
