@@ -1,23 +1,22 @@
 # Paralyze Project
 This little project i made to study the behaviour and possibilities of botnets while deepen my C++ knowledge, especially in how to
 build a command and control client-server architecture using the boost library. ***The purpose is strictly educational and not meant to be used for harmfull operations.***
-I will not provide any technical documentation as it's sole purpose is to provide an insight of how botnets can operate and which techniques are used to avoid
-detection. Additionally this project can be useful to others as it includes fundamential parts of client-server architectures using the boost library.
+For any further references please check out the [technical documentation](docs/technical-documentation.md).
 
 > This project is unfinished and currently no further development is planned.
 
 ## General concept
-The Paralyze Bot as its core consitsts of just the control module. It is used to fetch instructions and tools from the C2 server as administer other included modules.
+The Paralyze Bot as its core consitsts of just the control module. Its purpose is to fetch instructions and tools from the C2 server as administer other included modules.
 To avoid detection the paralyze bot architecture disguises communication as valid `TLS` encrypted API network traffic. The C2 server mimics an Apache webserver with common API
 endpoints to classify instructions.
  
-To manage bots and instructions two different backend systems are used. The C2 server saves newly assigned bots into a MariaDB SQL database. Each of them is mapped to a uuid and a JWT which is sent as identifier every time the bot connects to the C2. If a bot requests an instruction the server looks up the JWT matching the one in the database and gets the connected uuid. This uuid is referred to a specified json instruction in mongodb which is sent to the bot. The bot parses this json instruction and executes the selected module with the given parameters. 
+To manage bots and instructions two different backend systems are used. The C2 server saves newly assigned bots into a MariaDB SQL database. Each of them is mapped to a uuid and a JWT which is sent as identifier every time the bot connects to the C2. If a bot requests an instruction the server looks up the JWT matching the one in the database and gets the connected uuid. This uuid is referred to a specified json instruction in mongodb which is sent to the bot. The bot parses this json instruction and executes the selected module including the specified parameters. 
 
 The `server.py` is a web server written in javascript that can be used to manage C2 configurations at a graphical level. 
 
 ![alt text](paralyze-interface.png)
 
-## The skills and knowledge i improved during this project
+## Skills and knowledge i improved during this project
     - Botnet behavior
     - Evasion techniques
     - C++ 
