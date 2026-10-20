@@ -1,6 +1,10 @@
 # Paralyze Project
 This little project i made to study the behaviour and possibilities of botnets while deepen my C++ knowledge, especially in how to
 build a command and control client-server architecture using the boost library. ***The purpose is strictly educational and not meant to be used for harmfull operations.***
+This project can be used for testing your own
+infrastructure reslilience against botnet attacks,
+how to detect disguised network traffic or simply
+understand the mechanics of a C2-agent architecture.
 For any further references please check out the [technical documentation](docs/technical-documentation.md).
 
 > This project is unfinished and currently no further development is planned.
